@@ -1,0 +1,1 @@
+INSERT INTO `productos` (`id`, `codigo`, `nombre`, `tipo`, `valor`,`createAt`) VALUES (1, '12391', 'Jabon', 'a', 5000, '2025-10-02 13:03:08'), (2, '22332', 'Cartulida', 'p', 5000,'2025-10-02 13:03:08'),(3, '02759', 'Dolex', 'm', 5000,'2025-10-02 13:03:08');
