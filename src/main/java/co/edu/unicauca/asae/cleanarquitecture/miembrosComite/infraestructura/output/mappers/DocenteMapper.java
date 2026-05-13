@@ -1,4 +1,4 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.output.mappers;
+package co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.output.mappers;
 
 import java.util.ArrayList;
 import java.util.List;

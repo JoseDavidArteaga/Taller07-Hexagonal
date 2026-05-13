@@ -1,4 +1,4 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.aplicacion.output;
+package co.edu.unicauca.asae.cleanarquitecture.formatos.aplicacion.output;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,4 +10,6 @@ public interface GestionarEvaluacionGatewayIntPort {
     List<Evaluacion> listar();
     Optional<Evaluacion> obtenerPorId(Integer id);
     List<Evaluacion> obtenerHistoricoPorFormatoA(Integer idFormatoA);
+    Optional<Evaluacion> obtenerUltimaPorFormatoA(Integer idFormatoA);
+    Evaluacion crearEvaluacionInicialParaFormatoA(Integer idFormatoA);
 }

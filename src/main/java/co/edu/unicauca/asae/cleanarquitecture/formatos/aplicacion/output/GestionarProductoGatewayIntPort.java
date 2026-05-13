@@ -1,4 +1,4 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.aplicacion.output;
+package co.edu.unicauca.asae.cleanarquitecture.formatos.aplicacion.output;
 
 import java.util.List;
 

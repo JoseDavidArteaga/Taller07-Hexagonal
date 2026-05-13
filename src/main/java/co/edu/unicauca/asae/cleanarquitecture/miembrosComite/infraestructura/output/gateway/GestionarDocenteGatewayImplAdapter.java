@@ -1,4 +1,4 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.output.gateway;
+package co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.output.gateway;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +33,12 @@ public class GestionarDocenteGatewayImplAdapter implements GestionarDocenteGatew
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public boolean existeDocentePorId(Integer idDocente) {
+        return this.objDocenteRepository.existsById(idDocente);
+    }
+
+    @Override
     public Docente guardar(Docente docente) {
         DocenteEntity entity = this.docenteMapper.mapDeDominioAEntity(docente);
         DocenteEntity guardado = this.objDocenteRepository.save(entity);
@@ -46,6 +52,13 @@ public class GestionarDocenteGatewayImplAdapter implements GestionarDocenteGatew
         return StreamSupport.stream(iterable.spliterator(), false)
                 .map(this.docenteMapper::mapDeEntityADominio)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Docente> listarPorNombres(String nombres) {
+        return this.docenteMapper.mapDeEntityADominio(
+                this.objDocenteRepository.findAllByNombresIgnoreCase(nombres));
     }
 
     @Override

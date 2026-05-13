@@ -1,4 +1,4 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.dominio.casosDeUso;
+package co.edu.unicauca.asae.cleanarquitecture.formatos.dominio.casosDeUso;
 
 import java.util.Date;
 import java.util.List;

@@ -1,7 +1,8 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.gateway;
+package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.gateway;
 
 import org.springframework.stereotype.Service;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.aplicacion.output.ProductoFormateadorResultadosIntPort;
+import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.controladorExcepciones.EntidadNoExisteException;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.controladorExcepciones.EntidadYaExisteException;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.controladorExcepciones.ReglaNegocioExcepcion;
 
@@ -17,6 +18,12 @@ public class ProductoFormateadorResultadosImplAdapter implements ProductoFormate
     @Override
     public void retornarRespuestaErrorReglaDeNegocio(String mensaje) {
         ReglaNegocioExcepcion objException = new ReglaNegocioExcepcion(mensaje);
+        throw objException;
+    }
+
+    @Override
+    public void retornarRespuestaErrorEntidadNoExiste(String mensaje) {
+        EntidadNoExisteException objException = new EntidadNoExisteException(mensaje);
         throw objException;
     }
 

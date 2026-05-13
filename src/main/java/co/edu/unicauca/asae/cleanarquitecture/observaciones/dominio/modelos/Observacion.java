@@ -1,4 +1,4 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.observaciones.dominio.modelos;
+package co.edu.unicauca.asae.cleanarquitecture.observaciones.dominio.modelos;
 
 import co.edu.unicauca.asae.cleanarquitecture.formatos.dominio.modelos.Evaluacion;
 

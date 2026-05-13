@@ -1,4 +1,4 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.repositorios;
+package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.repositorios;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

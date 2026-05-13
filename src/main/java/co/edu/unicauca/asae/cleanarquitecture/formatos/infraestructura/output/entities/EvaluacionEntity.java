@@ -1,4 +1,4 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.entities;
+package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.entities;
 
 import co.edu.unicauca.asae.cleanarquitecture.observaciones.infraestructura.output.ObservacionEntity;
 

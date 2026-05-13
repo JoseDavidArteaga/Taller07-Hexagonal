@@ -1,0 +1,14 @@
+package co.edu.unicauca.asae.cleanarquitecture.miembrosComite.aplicacion.input;
+
+import java.util.List;
+
+import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.dominio.modelos.Docente;
+
+public interface GestionarDocenteCUIntPort {
+
+    List<Docente> listar();
+
+    List<Docente> listarPorNombres(String nombres);
+
+    List<Docente> listarMiembrosComite();
+}

@@ -1,4 +1,4 @@
-﻿
+
 package co.edu.unicauca.asae.cleanarquitecture.formatos.aplicacion.input;
 
 import java.util.List;

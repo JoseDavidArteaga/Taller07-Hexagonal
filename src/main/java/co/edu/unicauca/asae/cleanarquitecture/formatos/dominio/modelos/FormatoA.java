@@ -1,4 +1,4 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.dominio.modelos;
+package co.edu.unicauca.asae.cleanarquitecture.formatos.dominio.modelos;
 
 import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.dominio.modelos.Docente;
 

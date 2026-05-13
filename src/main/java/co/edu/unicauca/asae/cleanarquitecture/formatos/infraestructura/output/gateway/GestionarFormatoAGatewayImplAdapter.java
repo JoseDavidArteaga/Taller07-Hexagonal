@@ -1,5 +1,6 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.gateway;
+package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.gateway;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,6 +17,7 @@ import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.ma
 import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.mappers.FormatoAMapper;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.repositorios.EvaluacionRepositoryInt;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.repositorios.FormatoARepositoryInt;
+import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.output.entities.DocenteEntity;
 
 @Service
 @Transactional
@@ -43,6 +45,12 @@ public class GestionarFormatoAGatewayImplAdapter implements GestionarFormatoAGat
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public boolean existePorId(Integer idFormatoA) {
+        return this.objFormatoARepository.existsById(idFormatoA);
+    }
+
+    @Override
     public FormatoA guardar(FormatoA formatoA) {
         FormatoAEntity entity = this.formatoAMapper.mapDeDominioAEntity(formatoA);
         FormatoAEntity guardado = this.objFormatoARepository.save(entity);
@@ -63,6 +71,23 @@ public class GestionarFormatoAGatewayImplAdapter implements GestionarFormatoAGat
     public Optional<FormatoA> obtenerPorId(Integer id) {
         Optional<FormatoAEntity> opt = this.objFormatoARepository.findById(id);
         return opt.map(this.formatoAMapper::mapDeEntityADominio);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<FormatoA> listarPorDocente(Integer idDocente) {
+        Iterable<FormatoAEntity> iterable = this.objFormatoARepository.findAll();
+        List<FormatoA> resultado = new ArrayList<>();
+        for (FormatoAEntity entity : iterable) {
+            if (entity.getDocentes() == null) continue;
+            for (DocenteEntity d : entity.getDocentes()) {
+                if (d.getIdPersona() != null && d.getIdPersona().equals(idDocente)) {
+                    resultado.add(this.formatoAMapper.mapDeEntityADominio(entity));
+                    break;
+                }
+            }
+        }
+        return resultado;
     }
 
     @Override

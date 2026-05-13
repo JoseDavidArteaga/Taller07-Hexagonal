@@ -1,4 +1,4 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output;
+package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output;
 
 import static org.junit.jupiter.api.Assertions.*;
 

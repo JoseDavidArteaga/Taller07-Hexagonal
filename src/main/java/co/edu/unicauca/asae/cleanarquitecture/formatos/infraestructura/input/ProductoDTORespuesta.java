@@ -1,4 +1,4 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.input;
+package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.input;
 
 import java.util.Date;
 

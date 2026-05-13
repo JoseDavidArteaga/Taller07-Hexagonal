@@ -1,9 +1,14 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.gateway;
+package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.gateway;
 
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.aplicacion.output.GestionarEvaluacionGatewayIntPort;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.dominio.modelos.Evaluacion;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.entities.EvaluacionEntity;
+import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.entities.FormatoAEntity;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.mappers.EvaluacionMapper;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.repositorios.EvaluacionRepositoryInt;
 
@@ -18,8 +24,13 @@ import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.re
 @Transactional
 public class GestionarEvaluacionGatewayImplAdapter implements GestionarEvaluacionGatewayIntPort {
 
+    private static final String CONCEPTO_INICIAL = "Por establecer";
+
     private final EvaluacionRepositoryInt objEvaluacionRepository;
     private final EvaluacionMapper evaluacionMapper;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public GestionarEvaluacionGatewayImplAdapter(EvaluacionRepositoryInt objEvaluacionRepository,
                                                  EvaluacionMapper evaluacionMapper) {
@@ -55,5 +66,31 @@ public class GestionarEvaluacionGatewayImplAdapter implements GestionarEvaluacio
     public List<Evaluacion> obtenerHistoricoPorFormatoA(Integer idFormatoA) {
         return this.evaluacionMapper.mapDeEntityADominio(
                 this.objEvaluacionRepository.findHistoricoEvaluacionesByIdFormatoA(idFormatoA));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Evaluacion> obtenerUltimaPorFormatoA(Integer idFormatoA) {
+        List<EvaluacionEntity> historico = this.objEvaluacionRepository
+                .findHistoricoEvaluacionesByIdFormatoA(idFormatoA);
+        if (historico == null || historico.isEmpty()) {
+            return Optional.empty();
+        }
+        EvaluacionEntity ultima = historico.stream()
+                .max(Comparator.comparing(EvaluacionEntity::getFechaRegistro,
+                        Comparator.nullsFirst(Comparator.naturalOrder())))
+                .orElse(historico.get(historico.size() - 1));
+        return Optional.of(this.evaluacionMapper.mapDeEntityADominio(ultima));
+    }
+
+    @Override
+    public Evaluacion crearEvaluacionInicialParaFormatoA(Integer idFormatoA) {
+        FormatoAEntity referenciaFormatoA = this.entityManager.getReference(FormatoAEntity.class, idFormatoA);
+        EvaluacionEntity nueva = new EvaluacionEntity();
+        nueva.setConcepto(CONCEPTO_INICIAL);
+        nueva.setFechaRegistro(new Date());
+        nueva.setFormatoA(referenciaFormatoA);
+        EvaluacionEntity guardada = this.objEvaluacionRepository.save(nueva);
+        return this.evaluacionMapper.mapDeEntityADominio(guardada);
     }
 }

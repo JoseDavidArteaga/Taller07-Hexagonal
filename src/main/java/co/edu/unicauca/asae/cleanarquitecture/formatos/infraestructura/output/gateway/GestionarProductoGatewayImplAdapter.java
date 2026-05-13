@@ -1,4 +1,4 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.gateway;
+package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.gateway;
 
 import java.util.List;
 

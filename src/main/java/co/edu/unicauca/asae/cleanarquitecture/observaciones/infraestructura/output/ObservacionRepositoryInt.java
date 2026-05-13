@@ -1,4 +1,4 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.observaciones.infraestructura.output;
+package co.edu.unicauca.asae.cleanarquitecture.observaciones.infraestructura.output;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.dominio.modelos;
+package co.edu.unicauca.asae.cleanarquitecture.formatos.dominio.modelos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

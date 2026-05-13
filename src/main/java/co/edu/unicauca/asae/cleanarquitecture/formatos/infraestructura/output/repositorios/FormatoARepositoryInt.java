@@ -1,4 +1,4 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.repositorios;
+package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.repositorios;
 
 import java.util.Date;
 import java.util.List;

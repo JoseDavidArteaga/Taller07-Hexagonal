@@ -1,4 +1,4 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.miembrosComite.aplicacion.output;
+package co.edu.unicauca.asae.cleanarquitecture.miembrosComite.aplicacion.output;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,7 +7,9 @@ import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.dominio.modelos.Doc
 
 public interface GestionarDocenteGatewayIntPort {
     boolean existeDocentePorCorreo(String correo);
+    boolean existeDocentePorId(Integer idDocente);
     Docente guardar(Docente docente);
     List<Docente> listar();
+    List<Docente> listarPorNombres(String nombres);
     Optional<Docente> obtenerPorId(Integer id);
 }
