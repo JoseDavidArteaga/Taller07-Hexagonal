@@ -1,4 +1,4 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output;
+﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.gateway;
 
 import java.util.List;
 
@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import co.edu.unicauca.asae.cleanarquitecture.formatos.aplicacion.output.GestionarProductoGatewayIntPort;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.dominio.modelos.Producto;
+import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.entities.ProductoEntity;
+import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.repositorios.ProductoRepositoryInt;
 
 @Service
 public class GestionarProductoGatewayImplAdapter implements GestionarProductoGatewayIntPort {

@@ -1,7 +1,5 @@
 ﻿package co.edu.unicauca.asae.cleanarquitecture.observaciones.infraestructura.output;
 
-import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.EvaluacionEntity;
-
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -16,6 +14,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.entities.EvaluacionEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

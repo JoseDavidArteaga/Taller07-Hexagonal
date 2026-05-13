@@ -1,7 +1,9 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output;
+﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.gateway;
 
 import org.springframework.stereotype.Service;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.aplicacion.output.ProductoFormateadorResultadosIntPort;
+import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.controladorExcepciones.EntidadYaExisteException;
+import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.controladorExcepciones.ReglaNegocioExcepcion;
 
 @Service
 public class ProductoFormateadorResultadosImplAdapter implements ProductoFormateadorResultadosIntPort {

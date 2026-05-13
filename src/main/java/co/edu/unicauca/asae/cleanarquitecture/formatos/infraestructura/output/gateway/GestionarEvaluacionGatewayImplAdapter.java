@@ -1,4 +1,4 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output;
+﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.gateway;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import co.edu.unicauca.asae.cleanarquitecture.formatos.aplicacion.output.GestionarEvaluacionGatewayIntPort;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.dominio.modelos.Evaluacion;
+import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.entities.EvaluacionEntity;
+import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.mappers.EvaluacionMapper;
+import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.repositorios.EvaluacionRepositoryInt;
 
 @Service
 @Transactional

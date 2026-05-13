@@ -1,4 +1,4 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output;
+﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.mappers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,11 +7,14 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.dominio.modelos.Docente;
+import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.output.entities.DocenteEntity;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.dominio.modelos.Estado;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.dominio.modelos.Evaluacion;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.dominio.modelos.FormatoA;
+import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.entities.EstadoEntity;
+import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.entities.EvaluacionEntity;
+import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.entities.FormatoAEntity;
 import co.edu.unicauca.asae.cleanarquitecture.observaciones.dominio.modelos.Observacion;
-import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.output.DocenteEntity;
 import co.edu.unicauca.asae.cleanarquitecture.observaciones.infraestructura.output.ObservacionEntity;
 
 @Component

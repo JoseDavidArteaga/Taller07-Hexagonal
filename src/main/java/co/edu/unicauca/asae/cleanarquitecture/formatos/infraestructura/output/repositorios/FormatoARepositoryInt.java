@@ -1,4 +1,4 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output;
+﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.repositorios;
 
 import java.util.Date;
 import java.util.List;
@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+
+import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.entities.FormatoAEntity;
 
 
 public interface FormatoARepositoryInt extends CrudRepository<FormatoAEntity, Integer> {

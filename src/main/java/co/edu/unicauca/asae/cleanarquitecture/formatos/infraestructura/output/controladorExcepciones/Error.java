@@ -1,4 +1,4 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output;
+﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.controladorExcepciones;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

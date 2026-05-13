@@ -1,6 +1,4 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.output;
-
-import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.FormatoAEntity;
+﻿package co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.output.entities;
 
 import java.util.List;
 
@@ -13,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.entities.FormatoAEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

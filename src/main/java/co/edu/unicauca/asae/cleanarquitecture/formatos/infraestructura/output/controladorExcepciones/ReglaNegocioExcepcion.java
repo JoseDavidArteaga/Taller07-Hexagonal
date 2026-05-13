@@ -1,5 +1,4 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output;
-
+﻿package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.controladorExcepciones;
 
 public class ReglaNegocioExcepcion extends GestionClientesRuntimeException {
 

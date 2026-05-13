@@ -1,4 +1,4 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.output;
+﻿package co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.output.gateway;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.aplicacion.output.GestionarDocenteGatewayIntPort;
 import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.dominio.modelos.Docente;
+import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.output.entities.DocenteEntity;
+import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.output.mappers.DocenteMapper;
+import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.output.repositorios.DocenteRepositoryInt;
 
 @Service
 @Transactional

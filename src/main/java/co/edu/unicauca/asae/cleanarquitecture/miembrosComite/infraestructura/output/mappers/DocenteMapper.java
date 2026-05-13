@@ -1,4 +1,4 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.output;
+﻿package co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.output.mappers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.dominio.modelos.Docente;
+import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.output.entities.DocenteEntity;
 
 @Component
 public class DocenteMapper {

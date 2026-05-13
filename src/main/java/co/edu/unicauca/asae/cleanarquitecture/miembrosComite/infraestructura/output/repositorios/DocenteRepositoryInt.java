@@ -1,8 +1,10 @@
-﻿package co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.output;
+﻿package co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.output.repositorios;
 
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
+
+import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.output.entities.DocenteEntity;
 
 
 public interface DocenteRepositoryInt extends CrudRepository<DocenteEntity, Integer> {
