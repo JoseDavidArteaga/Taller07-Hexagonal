@@ -71,16 +71,9 @@ public class GestionarEvaluacionGatewayImplAdapter implements GestionarEvaluacio
     @Override
     @Transactional(readOnly = true)
     public Optional<Evaluacion> obtenerUltimaPorFormatoA(Integer idFormatoA) {
-        List<EvaluacionEntity> historico = this.objEvaluacionRepository
-                .findHistoricoEvaluacionesByIdFormatoA(idFormatoA);
-        if (historico == null || historico.isEmpty()) {
-            return Optional.empty();
-        }
-        EvaluacionEntity ultima = historico.stream()
-                .max(Comparator.comparing(EvaluacionEntity::getFechaRegistro,
-                        Comparator.nullsFirst(Comparator.naturalOrder())))
-                .orElse(historico.get(historico.size() - 1));
-        return Optional.of(this.evaluacionMapper.mapDeEntityADominio(ultima));
+        Optional<EvaluacionEntity> opt = this.objEvaluacionRepository
+                .findFirstByFormatoA_IdFormatoAOrderByFechaRegistroDescIdEvaluacionDesc(idFormatoA);
+        return opt.map(this.evaluacionMapper::mapDeEntityADominio);
     }
 
     @Override

@@ -19,5 +19,5 @@ public class FormatoA {
     private String objetivo;
     private Estado estado;
     private List<Evaluacion> evaluaciones;
-    private List<Docente> docentes;
+    private Docente docente;
 }

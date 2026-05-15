@@ -10,9 +10,13 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -25,6 +29,7 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "FormatosA")
+@Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 @Setter
 @AllArgsConstructor
@@ -45,12 +50,23 @@ public class FormatoAEntity {
     @Column(length = 500)
     private String objetivo;
 
-    @OneToOne(mappedBy = "formatoA", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "formatoA", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private EstadoEntity estado;
 
     @OneToMany(mappedBy = "formatoA", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<EvaluacionEntity> evaluaciones;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    private List<DocenteEntity> docentes;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "idfk_docente", nullable = false)
+    private DocenteEntity docente;
+
+    @PrePersist
+    private void registrarEstadoInicial() {
+        if (estado == null) {
+            EstadoEntity estadoInicial = new EstadoEntity();
+            estadoInicial.setEstado("En formulacion");
+            estadoInicial.setFormatoA(this);
+            estado = estadoInicial;
+        }
+    }
 }

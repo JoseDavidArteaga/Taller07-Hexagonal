@@ -25,6 +25,11 @@ public class GestionarDocenteCUAdapter implements GestionarDocenteCUIntPort {
     }
 
     @Override
+    public List<Docente> listarPorGrupoYPatron(String grupo, String patron) {
+        return this.objDocenteGateway.listarPorGrupoYPatron(grupo, patron);
+    }
+
+    @Override
     public List<Docente> listarMiembrosComite() {
         return this.objDocenteGateway.listar();
     }

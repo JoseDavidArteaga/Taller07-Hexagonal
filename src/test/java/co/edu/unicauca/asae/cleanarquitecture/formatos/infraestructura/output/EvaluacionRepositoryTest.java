@@ -16,6 +16,8 @@ import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.en
 import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.entities.FormatoAEntity;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.repositorios.EvaluacionRepositoryInt;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.repositorios.FormatoARepositoryInt;
+import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.output.entities.DocenteEntity;
+import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.output.repositorios.DocenteRepositoryInt;
 import co.edu.unicauca.asae.cleanarquitecture.observaciones.infraestructura.output.ObservacionEntity;
 
 @DataJpaTest
@@ -26,6 +28,9 @@ public class EvaluacionRepositoryTest {
 
     @Autowired
     private FormatoARepositoryInt formatoARepository;
+
+    @Autowired
+    private DocenteRepositoryInt docenteRepository;
 
     @Test
     @Transactional
@@ -109,10 +114,20 @@ public class EvaluacionRepositoryTest {
     }
 
     private FormatoAEntity crearFormato(String titulo) {
+        DocenteEntity docente = new DocenteEntity();
+        docente.setTipoIdentificacion("CC");
+        docente.setNumeroIdentificacion("999");
+        docente.setNombres("Docente");
+        docente.setApellidos("Prueba");
+        docente.setCorreo("docente.prueba@unicauca.edu.co");
+        docente.setDepartamento("Sistemas");
+        docenteRepository.save(docente);
+
         FormatoAEntity formato = new FormatoAEntity();
         formato.setTitulo(titulo);
         formato.setFecha(new Date());
         formato.setObjetivo("Objetivo");
+        formato.setDocente(docente);
         EstadoEntity estado = new EstadoEntity();
         estado.setEstado("En elaboración");
         estado.setFormatoA(formato);

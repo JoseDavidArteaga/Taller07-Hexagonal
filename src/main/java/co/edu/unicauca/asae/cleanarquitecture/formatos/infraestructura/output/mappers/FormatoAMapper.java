@@ -11,9 +11,13 @@ import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.out
 import co.edu.unicauca.asae.cleanarquitecture.formatos.dominio.modelos.Estado;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.dominio.modelos.Evaluacion;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.dominio.modelos.FormatoA;
+import co.edu.unicauca.asae.cleanarquitecture.formatos.dominio.modelos.FormatoPPA;
+import co.edu.unicauca.asae.cleanarquitecture.formatos.dominio.modelos.FormatoTIA;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.entities.EstadoEntity;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.entities.EvaluacionEntity;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.entities.FormatoAEntity;
+import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.entities.FormatoPPAEntity;
+import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.entities.FormatoTIAEntity;
 import co.edu.unicauca.asae.cleanarquitecture.observaciones.dominio.modelos.Observacion;
 import co.edu.unicauca.asae.cleanarquitecture.observaciones.infraestructura.output.ObservacionEntity;
 
@@ -22,7 +26,21 @@ public class FormatoAMapper {
 
     public FormatoAEntity mapDeDominioAEntity(FormatoA dominio) {
         if (dominio == null) return null;
-        FormatoAEntity entity = new FormatoAEntity();
+        FormatoAEntity entity;
+        if (dominio instanceof FormatoPPA) {
+            FormatoPPAEntity ppa = new FormatoPPAEntity();
+            ppa.setNombreEstudiante(((FormatoPPA) dominio).getNombreEstudiante());
+            ppa.setNombreAsesor(((FormatoPPA) dominio).getNombreAsesor());
+            ppa.setLinkCartaAceptacion(((FormatoPPA) dominio).getLinkCartaAceptacion());
+            entity = ppa;
+        } else if (dominio instanceof FormatoTIA) {
+            FormatoTIAEntity tia = new FormatoTIAEntity();
+            tia.setNombreEstudiante(((FormatoTIA) dominio).getNombreEstudiante());
+            tia.setNombreAsesor(((FormatoTIA) dominio).getNombreAsesor());
+            entity = tia;
+        } else {
+            entity = new FormatoAEntity();
+        }
         entity.setIdFormatoA(dominio.getIdFormatoA());
         entity.setTitulo(dominio.getTitulo());
         entity.setFecha(dominio.getFecha());
@@ -30,7 +48,6 @@ public class FormatoAMapper {
 
         if (dominio.getEstado() != null) {
             EstadoEntity estadoEntity = new EstadoEntity();
-            estadoEntity.setIdEstado(dominio.getIdFormatoA());
             estadoEntity.setEstado(dominio.getEstado().getEstado());
             estadoEntity.setFormatoA(entity);
             entity.setEstado(estadoEntity);
@@ -43,10 +60,8 @@ public class FormatoAMapper {
                 .collect(Collectors.toList()));
         }
 
-        if (dominio.getDocentes() != null) {
-            entity.setDocentes(dominio.getDocentes().stream()
-                .map(this::mapDocenteDeDominioAEntitySimple)
-                .collect(Collectors.toList()));
+        if (dominio.getDocente() != null) {
+            entity.setDocente(this.mapDocenteDeDominioAEntitySimple(dominio.getDocente()));
         }
 
         return entity;
@@ -54,7 +69,21 @@ public class FormatoAMapper {
 
     public FormatoA mapDeEntityADominio(FormatoAEntity entity) {
         if (entity == null) return null;
-        FormatoA dominio = new FormatoA();
+        FormatoA dominio;
+        if (entity instanceof FormatoPPAEntity) {
+            FormatoPPA ppa = new FormatoPPA();
+            ppa.setNombreEstudiante(((FormatoPPAEntity) entity).getNombreEstudiante());
+            ppa.setNombreAsesor(((FormatoPPAEntity) entity).getNombreAsesor());
+            ppa.setLinkCartaAceptacion(((FormatoPPAEntity) entity).getLinkCartaAceptacion());
+            dominio = ppa;
+        } else if (entity instanceof FormatoTIAEntity) {
+            FormatoTIA tia = new FormatoTIA();
+            tia.setNombreEstudiante(((FormatoTIAEntity) entity).getNombreEstudiante());
+            tia.setNombreAsesor(((FormatoTIAEntity) entity).getNombreAsesor());
+            dominio = tia;
+        } else {
+            dominio = new FormatoA();
+        }
         dominio.setIdFormatoA(entity.getIdFormatoA());
         dominio.setTitulo(entity.getTitulo());
         dominio.setFecha(entity.getFecha());
@@ -73,10 +102,8 @@ public class FormatoAMapper {
                 .collect(Collectors.toList()));
         }
 
-        if (entity.getDocentes() != null) {
-            dominio.setDocentes(entity.getDocentes().stream()
-                .map(this::mapDocenteDeEntityADominioSimple)
-                .collect(Collectors.toList()));
+        if (entity.getDocente() != null) {
+            dominio.setDocente(this.mapDocenteDeEntityADominioSimple(entity.getDocente()));
         }
 
         return dominio;

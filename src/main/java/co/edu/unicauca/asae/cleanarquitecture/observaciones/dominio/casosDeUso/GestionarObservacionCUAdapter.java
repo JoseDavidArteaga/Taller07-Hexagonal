@@ -64,20 +64,21 @@ public class GestionarObservacionCUAdapter implements GestionarObservacionCUIntP
         Optional<Evaluacion> ultima = this.objEvaluacionGateway.obtenerUltimaPorFormatoA(idFormatoA);
         if (!ultima.isPresent()) {
             Evaluacion creada = this.objEvaluacionGateway.crearEvaluacionInicialParaFormatoA(idFormatoA);
+            creada.setConcepto(CONCEPTO_POR_CORREGIR);
+            creada = this.objEvaluacionGateway.guardar(creada);
             return creada.getIdEvaluacion();
         }
         Evaluacion evaluacion = ultima.get();
         if (!CONCEPTO_POR_CORREGIR.equalsIgnoreCase(evaluacion.getConcepto())) {
-            this.objFormateador.retornarRespuestaErrorReglaDeNegocio(
-                    "La última evaluación del formato A " + idFormatoA + " no se encuentra en concepto 'Por corregir'");
-            return null;
+            evaluacion.setConcepto(CONCEPTO_POR_CORREGIR);
+            evaluacion = this.objEvaluacionGateway.guardar(evaluacion);
         }
         return evaluacion.getIdEvaluacion();
     }
 
     @Override
     public FormatoA listarPorFormatoA(Integer idFormatoA) {
-        Optional<FormatoA> opt = this.objFormatoAGateway.obtenerPorId(idFormatoA);
+        Optional<FormatoA> opt = this.objFormatoAGateway.obtenerDetallePorId(idFormatoA);
         if (!opt.isPresent()) {
             this.objFormateador
                     .retornarRespuestaErrorEntidadNoExiste("No existe el formato A con id " + idFormatoA);

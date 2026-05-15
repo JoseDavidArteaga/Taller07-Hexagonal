@@ -32,6 +32,14 @@ public class DocenteRestController {
         return new ResponseEntity<>(this.objMapeador.mappearDocentesARespuesta(docentes), HttpStatus.OK);
     }
 
+    @GetMapping("/filtrar")
+    public ResponseEntity<List<DocenteDTORespuesta>> listarPorGrupoYPatron(
+            @RequestParam String grupo,
+            @RequestParam String patron) {
+        List<Docente> docentes = this.objGestionarDocenteCU.listarPorGrupoYPatron(grupo, patron);
+        return new ResponseEntity<>(this.objMapeador.mappearDocentesARespuesta(docentes), HttpStatus.OK);
+    }
+
     @GetMapping("/comite")
     public ResponseEntity<List<MiembroComiteDTORespuesta>> listarMiembrosComite() {
         List<Docente> docentes = this.objGestionarDocenteCU.listarMiembrosComite();

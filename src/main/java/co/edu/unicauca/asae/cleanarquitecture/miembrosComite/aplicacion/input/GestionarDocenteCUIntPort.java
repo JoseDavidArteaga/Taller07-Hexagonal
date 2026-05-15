@@ -10,5 +10,7 @@ public interface GestionarDocenteCUIntPort {
 
     List<Docente> listarPorNombres(String nombres);
 
+    List<Docente> listarPorGrupoYPatron(String grupo, String patron);
+
     List<Docente> listarMiembrosComite();
 }

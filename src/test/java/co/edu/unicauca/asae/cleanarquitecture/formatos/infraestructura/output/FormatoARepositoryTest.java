@@ -26,13 +26,26 @@ public class FormatoARepositoryTest {
     @Autowired
     private DocenteRepositoryInt docenteRepository;
 
+    private DocenteEntity crearDocentePrueba(String correo) {
+        DocenteEntity d = new DocenteEntity();
+        d.setTipoIdentificacion("CC");
+        d.setNumeroIdentificacion(correo);
+        d.setNombres("Docente");
+        d.setApellidos("Prueba");
+        d.setCorreo(correo);
+        d.setDepartamento("Sistemas");
+        return docenteRepository.save(d);
+    }
+
     @Test
     @Transactional
-    void testGuardarFormatoAConEstadoMapsId() {
+    void testGuardarFormatoAConEstado() {
+        DocenteEntity docente = crearDocentePrueba("doc1@unicauca.edu.co");
         FormatoAEntity formato = new FormatoAEntity();
         formato.setTitulo("Formato de Prueba");
         formato.setFecha(new Date());
         formato.setObjetivo("Objetivo de prueba");
+        formato.setDocente(docente);
 
         EstadoEntity estado = new EstadoEntity();
         estado.setEstado("En elaboracion");
@@ -42,15 +55,17 @@ public class FormatoARepositoryTest {
         FormatoAEntity guardado = formatoARepository.save(formato);
         assertNotNull(guardado.getIdFormatoA());
         assertNotNull(guardado.getEstado());
-        assertEquals(guardado.getIdFormatoA(), guardado.getEstado().getIdEstado());
+        assertNotNull(guardado.getEstado().getIdEstado());
     }
 
     @Test
     void testExistsByTitulo() {
+        DocenteEntity docente = crearDocentePrueba("doc2@unicauca.edu.co");
         FormatoAEntity formato = new FormatoAEntity();
         formato.setTitulo("Titulo Unico");
         formato.setFecha(new Date());
         formato.setObjetivo("Objetivo");
+        formato.setDocente(docente);
         formatoARepository.save(formato);
 
         assertTrue(formatoARepository.existsByTitulo("Titulo Unico"));
@@ -60,10 +75,12 @@ public class FormatoARepositoryTest {
     @Test
     @Transactional
     void testActualizarEstadoPorQuery() {
+        DocenteEntity docente = crearDocentePrueba("doc3@unicauca.edu.co");
         FormatoAEntity formato = new FormatoAEntity();
         formato.setTitulo("Formato Estado");
         formato.setFecha(new Date());
         formato.setObjetivo("Objetivo");
+        formato.setDocente(docente);
 
         EstadoEntity estado = new EstadoEntity();
         estado.setEstado("En elaboracion");
@@ -79,7 +96,7 @@ public class FormatoARepositoryTest {
 
     @Test
     @Transactional
-    void testGuardarFormatoAConDocentesManyToMany() {
+    void testGuardarFormatoAConDocente() {
         DocenteEntity d1 = new DocenteEntity();
         d1.setTipoIdentificacion("CC");
         d1.setNumeroIdentificacion("100");
@@ -90,21 +107,19 @@ public class FormatoARepositoryTest {
         docenteRepository.save(d1);
 
         FormatoAEntity formato = new FormatoAEntity();
-        formato.setTitulo("Formato con Docentes");
+        formato.setTitulo("Formato con Docente");
         formato.setFecha(new Date());
         formato.setObjetivo("Objetivo");
-        List<DocenteEntity> docentes = new ArrayList<>();
-        docentes.add(d1);
-        formato.setDocentes(docentes);
+        formato.setDocente(d1);
 
         FormatoAEntity guardado = formatoARepository.save(formato);
         assertNotNull(guardado.getIdFormatoA());
-        assertNotNull(guardado.getDocentes());
-        assertEquals(1, guardado.getDocentes().size());
+        assertNotNull(guardado.getDocente());
+        assertEquals("Docente 1", guardado.getDocente().getNombres());
     }
 
     @Test
-    void testCountByDocentesIdPersona() {
+    void testFindByDocenteIdPersona() {
         DocenteEntity d1 = new DocenteEntity();
         d1.setTipoIdentificacion("CC");
         d1.setNumeroIdentificacion("200");
@@ -118,12 +133,10 @@ public class FormatoARepositoryTest {
         formato.setTitulo("Formato Count");
         formato.setFecha(new Date());
         formato.setObjetivo("Objetivo");
-        List<DocenteEntity> docentes = new ArrayList<>();
-        docentes.add(docenteGuardado);
-        formato.setDocentes(docentes);
+        formato.setDocente(docenteGuardado);
         formatoARepository.save(formato);
 
-        long count = formatoARepository.countByDocentes_IdPersona(docenteGuardado.getIdPersona());
-        assertEquals(1, count);
+        List<FormatoAEntity> resultado = formatoARepository.findByDocente_IdPersona(docenteGuardado.getIdPersona());
+        assertEquals(1, resultado.size());
     }
 }

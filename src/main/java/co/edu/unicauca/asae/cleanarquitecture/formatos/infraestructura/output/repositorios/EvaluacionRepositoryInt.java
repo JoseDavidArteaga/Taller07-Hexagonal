@@ -2,6 +2,7 @@ package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.r
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -16,6 +17,8 @@ public interface EvaluacionRepositoryInt extends CrudRepository<EvaluacionEntity
     List<EvaluacionEntity> findHistoricoEvaluacionesByIdFormatoA(@Param("idFormatoA") Integer idFormatoA);
 
     List<EvaluacionEntity> findByFormatoA_IdFormatoA(Integer idFormatoA);
+
+    Optional<EvaluacionEntity> findFirstByFormatoA_IdFormatoAOrderByFechaRegistroDescIdEvaluacionDesc(Integer idFormatoA);
 
     List<EvaluacionEntity> findAllByFechaRegistroAfter(Date fecha);
 

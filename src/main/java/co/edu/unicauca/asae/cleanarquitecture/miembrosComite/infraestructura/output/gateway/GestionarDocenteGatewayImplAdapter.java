@@ -67,4 +67,18 @@ public class GestionarDocenteGatewayImplAdapter implements GestionarDocenteGatew
         Optional<DocenteEntity> opt = this.objDocenteRepository.findById(id);
         return opt.map(this.docenteMapper::mapDeEntityADominio);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Docente> obtenerPorCorreo(String correo) {
+        Optional<DocenteEntity> opt = this.objDocenteRepository.findByCorreo(correo);
+        return opt.map(this.docenteMapper::mapDeEntityADominio);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Docente> listarPorGrupoYPatron(String grupo, String patron) {
+        return this.docenteMapper.mapDeEntityADominio(
+                this.objDocenteRepository.findByDepartamentoIgnoreCaseAndApellidosStartingWithIgnoreCaseOrderByApellidos(grupo, patron));
+    }
 }

@@ -10,6 +10,7 @@ import co.edu.unicauca.asae.cleanarquitecture.formatos.aplicacion.output.Gestion
 import co.edu.unicauca.asae.cleanarquitecture.formatos.aplicacion.output.ProductoFormateadorResultadosIntPort;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.dominio.modelos.Estado;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.dominio.modelos.FormatoA;
+import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.dto.FormatoADetalleDTO;
 import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.aplicacion.output.GestionarDocenteGatewayIntPort;
 import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.dominio.modelos.Docente;
 
@@ -37,9 +38,9 @@ public class GestionarFormatoACUAdapter implements GestionarFormatoACUIntPort {
             return null;
         }
 
-        if (objFormatoA.getDocentes() == null || objFormatoA.getDocentes().isEmpty()) {
+        if (objFormatoA.getDocente() == null) {
             this.objFormateador
-                    .retornarRespuestaErrorReglaDeNegocio("Un formato A debe tener al menos un docente director");
+                    .retornarRespuestaErrorReglaDeNegocio("Un formato A debe tener un docente director");
             return null;
         }
 
@@ -48,12 +49,8 @@ public class GestionarFormatoACUAdapter implements GestionarFormatoACUIntPort {
             objFormatoA.setFecha(fechaActual);
         }
 
-        List<Docente> docentesResueltos = new ArrayList<>();
-        for (Docente docenteEntrada : objFormatoA.getDocentes()) {
-            Docente resuelto = resolverDocente(docenteEntrada);
-            docentesResueltos.add(resuelto);
-        }
-        objFormatoA.setDocentes(docentesResueltos);
+        Docente docenteResuelto = resolverDocente(objFormatoA.getDocente());
+        objFormatoA.setDocente(docenteResuelto);
 
         Estado estadoInicial = new Estado();
         estadoInicial.setEstado(ESTADO_INICIAL);
@@ -122,5 +119,10 @@ public class GestionarFormatoACUAdapter implements GestionarFormatoACUIntPort {
             return null;
         }
         return this.objFormatoAGateway.obtenerPorId(idFormatoA).orElse(null);
+    }
+
+    @Override
+    public List<FormatoADetalleDTO> obtenerDetallePorTitulo(String titulo) {
+        return this.objFormatoAGateway.obtenerDetallePorTitulo(titulo);
     }
 }

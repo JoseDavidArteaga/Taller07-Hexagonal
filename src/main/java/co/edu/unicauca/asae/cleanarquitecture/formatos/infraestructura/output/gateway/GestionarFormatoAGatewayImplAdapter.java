@@ -12,12 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.aplicacion.output.GestionarFormatoAGatewayIntPort;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.dominio.modelos.Evaluacion;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.dominio.modelos.FormatoA;
+import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.dto.FormatoADetalleDTO;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.entities.FormatoAEntity;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.mappers.EvaluacionMapper;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.mappers.FormatoAMapper;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.repositorios.EvaluacionRepositoryInt;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.repositorios.FormatoARepositoryInt;
-import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.output.entities.DocenteEntity;
 
 @Service
 @Transactional
@@ -75,19 +75,25 @@ public class GestionarFormatoAGatewayImplAdapter implements GestionarFormatoAGat
 
     @Override
     @Transactional(readOnly = true)
+    public Optional<FormatoA> obtenerPorTitulo(String titulo) {
+        Optional<FormatoAEntity> opt = this.objFormatoARepository.findByTitulo(titulo);
+        return opt.map(this.formatoAMapper::mapDeEntityADominio);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<FormatoA> obtenerDetallePorId(Integer id) {
+        Optional<FormatoAEntity> opt = this.objFormatoARepository.findDetalleByIdFormatoA(id);
+        return opt.map(this.formatoAMapper::mapDeEntityADominio);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<FormatoA> listarPorDocente(Integer idDocente) {
-        Iterable<FormatoAEntity> iterable = this.objFormatoARepository.findAll();
-        List<FormatoA> resultado = new ArrayList<>();
-        for (FormatoAEntity entity : iterable) {
-            if (entity.getDocentes() == null) continue;
-            for (DocenteEntity d : entity.getDocentes()) {
-                if (d.getIdPersona() != null && d.getIdPersona().equals(idDocente)) {
-                    resultado.add(this.formatoAMapper.mapDeEntityADominio(entity));
-                    break;
-                }
-            }
-        }
-        return resultado;
+        List<FormatoAEntity> entities = this.objFormatoARepository.findByDocente_IdPersona(idDocente);
+        return entities.stream()
+                .map(this.formatoAMapper::mapDeEntityADominio)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -100,5 +106,11 @@ public class GestionarFormatoAGatewayImplAdapter implements GestionarFormatoAGat
     public List<Evaluacion> obtenerHistoricoEvaluaciones(Integer idFormatoA) {
         return this.evaluacionMapper.mapDeEntityADominio(
                 this.objEvaluacionRepository.findHistoricoEvaluacionesByIdFormatoA(idFormatoA));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<FormatoADetalleDTO> obtenerDetallePorTitulo(String titulo) {
+        return this.objFormatoARepository.findFormatoADetalladoPorTitulo(titulo);
     }
 }

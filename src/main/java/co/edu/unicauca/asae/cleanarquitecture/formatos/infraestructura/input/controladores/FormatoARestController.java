@@ -12,13 +12,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 import co.edu.unicauca.asae.cleanarquitecture.formatos.aplicacion.input.GestionarFormatoACUIntPort;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.dominio.modelos.FormatoA;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.input.dtos.ActualizarEstadoFormatoADTOPeticion;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.input.dtos.FormatoADTOPeticion;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.input.dtos.FormatoADTORespuesta;
+import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.input.dtos.FormatoPPADTOPeticion;
+import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.input.dtos.FormatoTIADTOPeticion;
+import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.dto.FormatoADetalleDTO;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.input.mappers.FormatoAMapperInfraestructuraDominio;
 import lombok.RequiredArgsConstructor;
 
@@ -32,6 +38,20 @@ public class FormatoARestController {
 
     @PostMapping
     public ResponseEntity<FormatoADTORespuesta> crear(@RequestBody @Valid FormatoADTOPeticion peticion) {
+        FormatoA aDominio = this.objMapeador.mappearDePeticionAFormatoA(peticion);
+        FormatoA creado = this.objGestionarFormatoACU.crear(aDominio);
+        return new ResponseEntity<>(this.objMapeador.mappearDeFormatoARespuesta(creado), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/ppa")
+    public ResponseEntity<FormatoADTORespuesta> crearPPA(@RequestBody @Valid FormatoPPADTOPeticion peticion) {
+        FormatoA aDominio = this.objMapeador.mappearDePeticionAFormatoA(peticion);
+        FormatoA creado = this.objGestionarFormatoACU.crear(aDominio);
+        return new ResponseEntity<>(this.objMapeador.mappearDeFormatoARespuesta(creado), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/tia")
+    public ResponseEntity<FormatoADTORespuesta> crearTIA(@RequestBody @Valid FormatoTIADTOPeticion peticion) {
         FormatoA aDominio = this.objMapeador.mappearDePeticionAFormatoA(peticion);
         FormatoA creado = this.objGestionarFormatoACU.crear(aDominio);
         return new ResponseEntity<>(this.objMapeador.mappearDeFormatoARespuesta(creado), HttpStatus.CREATED);
@@ -53,6 +73,12 @@ public class FormatoARestController {
     public ResponseEntity<List<FormatoADTORespuesta>> consultarPorDocente(@PathVariable Integer idDocente) {
         List<FormatoA> formatos = this.objGestionarFormatoACU.consultarPorDocente(idDocente);
         return new ResponseEntity<>(this.objMapeador.mappearDeFormatosARespuesta(formatos), HttpStatus.OK);
+    }
+
+    @GetMapping("/detalle")
+    public ResponseEntity<Map<String, Object>> obtenerDetallePorTitulo(@RequestParam String titulo) {
+        List<FormatoADetalleDTO> detalle = this.objGestionarFormatoACU.obtenerDetallePorTitulo(titulo);
+        return new ResponseEntity<>(Map.of("titulo", titulo, "detalle", detalle), HttpStatus.OK);
     }
 
     @PutMapping("/{idFormatoA}/estado")

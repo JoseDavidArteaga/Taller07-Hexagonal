@@ -25,7 +25,7 @@ public class FormatoADTOPeticion {
     @Size(max = 500, message = "{formatoA.objetivo.size}")
     private String objetivo;
 
-    @NotEmpty(message = "{formatoA.docentes.empty}")
+    @NotNull(message = "{formatoA.docente.empty}")
     @Valid
-    private List<DocenteFormatoADTOPeticion> docentes;
+    private DocenteFormatoADTOPeticion docente;
 }

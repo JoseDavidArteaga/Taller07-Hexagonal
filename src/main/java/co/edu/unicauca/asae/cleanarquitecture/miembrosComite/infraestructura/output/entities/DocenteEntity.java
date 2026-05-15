@@ -8,10 +8,14 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.entities.FormatoAEntity;
+import co.edu.unicauca.asae.cleanarquitecture.observaciones.infraestructura.output.ObservacionEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -48,6 +52,17 @@ public class DocenteEntity {
     @Column(length = 100)
     private String departamento;
 
-    @ManyToMany(mappedBy = "docentes", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "docente", fetch = FetchType.LAZY)
     private List<FormatoAEntity> formatosA;
+
+    @OneToMany(mappedBy = "docente", fetch = FetchType.LAZY)
+    private List<HistoricoEntity> historicos;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "docentes_observaciones",
+        joinColumns = @JoinColumn(name = "idfk_docente"),
+        inverseJoinColumns = @JoinColumn(name = "idfk_observacion")
+    )
+    private List<ObservacionEntity> observaciones;
 }

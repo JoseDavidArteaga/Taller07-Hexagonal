@@ -12,4 +12,6 @@ public interface GestionarDocenteGatewayIntPort {
     List<Docente> listar();
     List<Docente> listarPorNombres(String nombres);
     Optional<Docente> obtenerPorId(Integer id);
+    Optional<Docente> obtenerPorCorreo(String correo);
+    List<Docente> listarPorGrupoYPatron(String grupo, String patron);
 }

@@ -1,8 +1,8 @@
 package co.edu.unicauca.asae.cleanarquitecture.miembrosComite.dominio.modelos;
 
 import co.edu.unicauca.asae.cleanarquitecture.formatos.dominio.modelos.FormatoA;
+import co.edu.unicauca.asae.cleanarquitecture.observaciones.dominio.modelos.Observacion;
 
-import java.util.Date;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -21,4 +21,6 @@ public class Docente {
     private String correo;
     private String departamento;
     private List<FormatoA> formatosA;
+    private List<Historico> historicos;
+    private List<Observacion> observaciones;
 }
