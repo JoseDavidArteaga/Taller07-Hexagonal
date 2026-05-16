@@ -13,4 +13,5 @@ public class FormatoTIADTORespuesta extends FormatoADTORespuesta {
 
     private String nombreEstudiante;
     private String nombreAsesor;
+    private String codigoEstudiante;
 }

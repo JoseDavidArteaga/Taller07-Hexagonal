@@ -7,6 +7,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.input.validaciones.VerboInfinitivo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,8 +23,9 @@ public class FormatoADTOPeticion {
     @Size(min = 5, max = 200, message = "{formatoA.titulo.size}")
     private String titulo;
 
-    @Size(max = 500, message = "{formatoA.objetivo.size}")
-    private String objetivo;
+    @NotEmpty(message = "{formatoA.objetivos.empty}")
+    @Size(min = 3, message = "{formatoA.objetivos.min}")
+    private List<@VerboInfinitivo String> objetivos;
 
     @NotNull(message = "{formatoA.docente.empty}")
     @Valid

@@ -126,7 +126,7 @@ public class EvaluacionRepositoryTest {
         FormatoAEntity formato = new FormatoAEntity();
         formato.setTitulo(titulo);
         formato.setFecha(new Date());
-        formato.setObjetivo("Objetivo");
+        formato.setObjetivos(List.of("Analizar el problema", "Diseñar la solucion", "Implementar el sistema"));
         formato.setDocente(docente);
         EstadoEntity estado = new EstadoEntity();
         estado.setEstado("En elaboración");

@@ -37,18 +37,20 @@ public class FormatoAMapperInfraestructuraDominio {
             ppa.setNombreEstudiante(ppaPeticion.getNombreEstudiante());
             ppa.setNombreAsesor(ppaPeticion.getNombreAsesor());
             ppa.setLinkCartaAceptacion(ppaPeticion.getLinkCartaAceptacion());
+            ppa.setCodigoEstudiante(ppaPeticion.getCodigoEstudiante());
             dominio = ppa;
         } else if (peticion instanceof FormatoTIADTOPeticion) {
             FormatoTIADTOPeticion tiaPeticion = (FormatoTIADTOPeticion) peticion;
             FormatoTIA tia = new FormatoTIA();
             tia.setNombreEstudiante(tiaPeticion.getNombreEstudiante());
             tia.setNombreAsesor(tiaPeticion.getNombreAsesor());
+            tia.setCodigoEstudiante(tiaPeticion.getCodigoEstudiante());
             dominio = tia;
         } else {
             dominio = new FormatoA();
         }
         dominio.setTitulo(peticion.getTitulo());
-        dominio.setObjetivo(peticion.getObjetivo());
+        dominio.setObjetivos(peticion.getObjetivos());
         if (peticion.getDocente() != null) {
             dominio.setDocente(this.mappearDeDTOADocente(peticion.getDocente()));
         }
@@ -63,11 +65,13 @@ public class FormatoAMapperInfraestructuraDominio {
             ppaRespuesta.setNombreEstudiante(((FormatoPPA) dominio).getNombreEstudiante());
             ppaRespuesta.setNombreAsesor(((FormatoPPA) dominio).getNombreAsesor());
             ppaRespuesta.setLinkCartaAceptacion(((FormatoPPA) dominio).getLinkCartaAceptacion());
+            ppaRespuesta.setCodigoEstudiante(((FormatoPPA) dominio).getCodigoEstudiante());
             respuesta = ppaRespuesta;
         } else if (dominio instanceof FormatoTIA) {
             FormatoTIADTORespuesta tiaRespuesta = new FormatoTIADTORespuesta();
             tiaRespuesta.setNombreEstudiante(((FormatoTIA) dominio).getNombreEstudiante());
             tiaRespuesta.setNombreAsesor(((FormatoTIA) dominio).getNombreAsesor());
+            tiaRespuesta.setCodigoEstudiante(((FormatoTIA) dominio).getCodigoEstudiante());
             respuesta = tiaRespuesta;
         } else {
             respuesta = new FormatoADTORespuesta();
@@ -75,7 +79,7 @@ public class FormatoAMapperInfraestructuraDominio {
         respuesta.setIdFormatoA(dominio.getIdFormatoA());
         respuesta.setTitulo(dominio.getTitulo());
         respuesta.setFecha(dominio.getFecha());
-        respuesta.setObjetivo(dominio.getObjetivo());
+        respuesta.setObjetivos(dominio.getObjetivos());
         respuesta.setEstado(mappearEstado(dominio.getEstado()));
         if (dominio.getEvaluaciones() != null) {
             respuesta.setEvaluaciones(dominio.getEvaluaciones().stream()

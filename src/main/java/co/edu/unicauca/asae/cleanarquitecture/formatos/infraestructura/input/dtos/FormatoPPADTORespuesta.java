@@ -14,4 +14,5 @@ public class FormatoPPADTORespuesta extends FormatoADTORespuesta {
     private String nombreEstudiante;
     private String nombreAsesor;
     private String linkCartaAceptacion;
+    private String codigoEstudiante;
 }

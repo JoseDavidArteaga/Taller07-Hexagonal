@@ -24,4 +24,7 @@ public class FormatoTIAEntity extends FormatoAEntity {
 
     @Column(length = 100)
     private String nombreAsesor;
+
+    @Column(length = 20, nullable = false)
+    private String codigoEstudiante;
 }

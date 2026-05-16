@@ -13,4 +13,5 @@ public class FormatoTIA extends FormatoA {
 
     private String nombreEstudiante;
     private String nombreAsesor;
+    private String codigoEstudiante;
 }

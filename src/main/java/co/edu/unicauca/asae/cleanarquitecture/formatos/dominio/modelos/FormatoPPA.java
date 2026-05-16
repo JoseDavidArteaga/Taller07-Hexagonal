@@ -14,4 +14,5 @@ public class FormatoPPA extends FormatoA {
     private String nombreEstudiante;
     private String nombreAsesor;
     private String linkCartaAceptacion;
+    private String codigoEstudiante;
 }

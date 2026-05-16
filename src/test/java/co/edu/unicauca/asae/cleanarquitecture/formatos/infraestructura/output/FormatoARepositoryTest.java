@@ -44,7 +44,7 @@ public class FormatoARepositoryTest {
         FormatoAEntity formato = new FormatoAEntity();
         formato.setTitulo("Formato de Prueba");
         formato.setFecha(new Date());
-        formato.setObjetivo("Objetivo de prueba");
+        formato.setObjetivos(List.of("Analizar el problema", "Diseñar la solucion", "Implementar el sistema"));
         formato.setDocente(docente);
 
         EstadoEntity estado = new EstadoEntity();
@@ -64,7 +64,7 @@ public class FormatoARepositoryTest {
         FormatoAEntity formato = new FormatoAEntity();
         formato.setTitulo("Titulo Unico");
         formato.setFecha(new Date());
-        formato.setObjetivo("Objetivo");
+        formato.setObjetivos(List.of("Analizar el problema", "Diseñar la solucion", "Implementar el sistema"));
         formato.setDocente(docente);
         formatoARepository.save(formato);
 
@@ -79,7 +79,7 @@ public class FormatoARepositoryTest {
         FormatoAEntity formato = new FormatoAEntity();
         formato.setTitulo("Formato Estado");
         formato.setFecha(new Date());
-        formato.setObjetivo("Objetivo");
+        formato.setObjetivos(List.of("Analizar el problema", "Diseñar la solucion", "Implementar el sistema"));
         formato.setDocente(docente);
 
         EstadoEntity estado = new EstadoEntity();
@@ -109,7 +109,7 @@ public class FormatoARepositoryTest {
         FormatoAEntity formato = new FormatoAEntity();
         formato.setTitulo("Formato con Docente");
         formato.setFecha(new Date());
-        formato.setObjetivo("Objetivo");
+        formato.setObjetivos(List.of("Analizar el problema", "Diseñar la solucion", "Implementar el sistema"));
         formato.setDocente(d1);
 
         FormatoAEntity guardado = formatoARepository.save(formato);
@@ -132,7 +132,7 @@ public class FormatoARepositoryTest {
         FormatoAEntity formato = new FormatoAEntity();
         formato.setTitulo("Formato Count");
         formato.setFecha(new Date());
-        formato.setObjetivo("Objetivo");
+        formato.setObjetivos(List.of("Analizar el problema", "Diseñar la solucion", "Implementar el sistema"));
         formato.setDocente(docenteGuardado);
         formatoARepository.save(formato);
 

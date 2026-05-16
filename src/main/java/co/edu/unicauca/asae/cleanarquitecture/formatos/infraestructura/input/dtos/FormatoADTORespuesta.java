@@ -16,7 +16,7 @@ public class FormatoADTORespuesta {
     private Integer idFormatoA;
     private String titulo;
     private Date fecha;
-    private String objetivo;
+    private List<String> objetivos;
     private EstadoDTORespuesta estado;
     private List<EvaluacionDTORespuesta> evaluaciones;
     private DocenteDTORespuesta docente;

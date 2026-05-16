@@ -79,8 +79,13 @@ public class RestApiExceptionHandler {
 
         @ResponseStatus(HttpStatus.BAD_REQUEST)
         @ExceptionHandler(ConstraintViolationException.class)
-        ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException e) {
-                return new ResponseEntity<>(e.getMessage(),
-                                HttpStatus.BAD_REQUEST);
+        ResponseEntity<Map<String, String>> handleConstraintViolationException(ConstraintViolationException e) {
+                Map<String, String> errores = new HashMap<>();
+                e.getConstraintViolations().forEach(violation -> {
+                        String campo = violation.getPropertyPath().toString();
+                        String mensaje = violation.getMessage();
+                        errores.put(campo, mensaje);
+                });
+                return new ResponseEntity<>(errores, HttpStatus.BAD_REQUEST);
         }
 }

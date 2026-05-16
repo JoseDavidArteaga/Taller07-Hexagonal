@@ -47,8 +47,10 @@ public class FormatoAEntity {
     @Temporal(TemporalType.DATE)
     private Date fecha;
 
-    @Column(length = 500)
-    private String objetivo;
+    @javax.persistence.ElementCollection
+    @javax.persistence.CollectionTable(name = "FormatoAObjetivos", joinColumns = @javax.persistence.JoinColumn(name = "idFormatoA"))
+    @javax.persistence.Column(name = "objetivo", length = 500)
+    private List<String> objetivos;
 
     @OneToOne(mappedBy = "formatoA", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private EstadoEntity estado;

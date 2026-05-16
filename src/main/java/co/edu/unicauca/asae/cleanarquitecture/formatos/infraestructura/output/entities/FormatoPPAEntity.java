@@ -27,4 +27,7 @@ public class FormatoPPAEntity extends FormatoAEntity {
 
     @Column(length = 255)
     private String linkCartaAceptacion;
+
+    @Column(length = 20, nullable = false)
+    private String codigoEstudiante;
 }

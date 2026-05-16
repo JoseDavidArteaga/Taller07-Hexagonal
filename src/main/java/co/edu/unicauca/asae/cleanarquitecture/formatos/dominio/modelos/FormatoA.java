@@ -16,7 +16,7 @@ public class FormatoA {
     private Integer idFormatoA;
     private String titulo;
     private Date fecha;
-    private String objetivo;
+    private List<String> objetivos;
     private Estado estado;
     private List<Evaluacion> evaluaciones;
     private Docente docente;

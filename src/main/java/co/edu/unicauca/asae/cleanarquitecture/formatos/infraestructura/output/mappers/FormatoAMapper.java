@@ -32,11 +32,13 @@ public class FormatoAMapper {
             ppa.setNombreEstudiante(((FormatoPPA) dominio).getNombreEstudiante());
             ppa.setNombreAsesor(((FormatoPPA) dominio).getNombreAsesor());
             ppa.setLinkCartaAceptacion(((FormatoPPA) dominio).getLinkCartaAceptacion());
+            ppa.setCodigoEstudiante(((FormatoPPA) dominio).getCodigoEstudiante());
             entity = ppa;
         } else if (dominio instanceof FormatoTIA) {
             FormatoTIAEntity tia = new FormatoTIAEntity();
             tia.setNombreEstudiante(((FormatoTIA) dominio).getNombreEstudiante());
             tia.setNombreAsesor(((FormatoTIA) dominio).getNombreAsesor());
+            tia.setCodigoEstudiante(((FormatoTIA) dominio).getCodigoEstudiante());
             entity = tia;
         } else {
             entity = new FormatoAEntity();
@@ -44,7 +46,7 @@ public class FormatoAMapper {
         entity.setIdFormatoA(dominio.getIdFormatoA());
         entity.setTitulo(dominio.getTitulo());
         entity.setFecha(dominio.getFecha());
-        entity.setObjetivo(dominio.getObjetivo());
+        entity.setObjetivos(dominio.getObjetivos());
 
         if (dominio.getEstado() != null) {
             EstadoEntity estadoEntity = new EstadoEntity();
@@ -76,11 +78,13 @@ public class FormatoAMapper {
             ppa.setNombreEstudiante(((FormatoPPAEntity) entity).getNombreEstudiante());
             ppa.setNombreAsesor(((FormatoPPAEntity) entity).getNombreAsesor());
             ppa.setLinkCartaAceptacion(((FormatoPPAEntity) entity).getLinkCartaAceptacion());
+            ppa.setCodigoEstudiante(((FormatoPPAEntity) entity).getCodigoEstudiante());
             dominio = ppa;
         } else if (entity instanceof FormatoTIAEntity) {
             FormatoTIA tia = new FormatoTIA();
             tia.setNombreEstudiante(((FormatoTIAEntity) entity).getNombreEstudiante());
             tia.setNombreAsesor(((FormatoTIAEntity) entity).getNombreAsesor());
+            tia.setCodigoEstudiante(((FormatoTIAEntity) entity).getCodigoEstudiante());
             dominio = tia;
         } else {
             dominio = new FormatoA();
@@ -88,7 +92,7 @@ public class FormatoAMapper {
         dominio.setIdFormatoA(entity.getIdFormatoA());
         dominio.setTitulo(entity.getTitulo());
         dominio.setFecha(entity.getFecha());
-        dominio.setObjetivo(entity.getObjetivo());
+        dominio.setObjetivos(entity.getObjetivos());
 
         if (entity.getEstado() != null) {
             Estado estado = new Estado();
