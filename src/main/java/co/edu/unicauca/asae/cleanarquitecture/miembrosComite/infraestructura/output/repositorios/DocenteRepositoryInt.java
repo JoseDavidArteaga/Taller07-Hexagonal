@@ -25,7 +25,7 @@ public interface DocenteRepositoryInt extends CrudRepository<DocenteEntity, Inte
 
     List<DocenteEntity> findAllByNombresIgnoreCase(String nombres);
 
-    List<DocenteEntity> findByDepartamentoIgnoreCaseAndApellidosStartingWithIgnoreCaseOrderByApellidos(
+    List<DocenteEntity> findByDepartamentoIgnoreCaseAndApellidosStartingWithIgnoreCaseOrderByApellidosAsc(
             String nombreGrupo, String patronBusqueda);
 
     @EntityGraph(attributePaths = {"formatosA"})

@@ -22,6 +22,9 @@ public interface EvaluacionRepositoryInt extends CrudRepository<EvaluacionEntity
 
     List<EvaluacionEntity> findAllByFechaRegistroAfter(Date fecha);
 
+    List<EvaluacionEntity> findByFechaRegistroBetweenAndFormatoA_Docente_NombresContainingIgnoreCase(
+            Date fechaInicio, Date fechaFin, String nombreDocente);
+
     long countByFormatoA_IdFormatoA(Integer idFormatoA);
 
     void deleteByFormatoA_IdFormatoA(Integer idFormatoA);

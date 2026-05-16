@@ -79,6 +79,6 @@ public class GestionarDocenteGatewayImplAdapter implements GestionarDocenteGatew
     @Transactional(readOnly = true)
     public List<Docente> listarPorGrupoYPatron(String grupo, String patron) {
         return this.docenteMapper.mapDeEntityADominio(
-                this.objDocenteRepository.findByDepartamentoIgnoreCaseAndApellidosStartingWithIgnoreCaseOrderByApellidos(grupo, patron));
+                this.objDocenteRepository.findByDepartamentoIgnoreCaseAndApellidosStartingWithIgnoreCaseOrderByApellidosAsc(grupo, patron));
     }
 }

@@ -10,7 +10,7 @@ import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.out
 
 public interface DocenteRepository extends CrudRepository<DocenteEntity, Integer> {
 
-    List<DocenteEntity> findByDepartamentoIgnoreCaseAndApellidosStartingWithIgnoreCaseOrderByApellidos(
+    List<DocenteEntity> findByDepartamentoIgnoreCaseAndApellidosStartingWithIgnoreCaseOrderByApellidosAsc(
             String nombreGrupo,
             String patronBusqueda);
 
