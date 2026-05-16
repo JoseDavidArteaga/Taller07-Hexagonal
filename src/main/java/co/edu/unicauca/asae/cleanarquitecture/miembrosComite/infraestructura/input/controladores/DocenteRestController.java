@@ -2,15 +2,20 @@ package co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.in
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.aplicacion.input.GestionarDocenteCUIntPort;
 import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.dominio.modelos.Docente;
+import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.input.dtos.DocenteDTOPeticion;
 import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.input.dtos.DocenteDTORespuesta;
 import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.input.dtos.MiembroComiteDTORespuesta;
 import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.input.mappers.DocenteMapperInfraestructuraDominio;
@@ -23,6 +28,13 @@ public class DocenteRestController {
 
     private final GestionarDocenteCUIntPort objGestionarDocenteCU;
     private final DocenteMapperInfraestructuraDominio objMapeador;
+
+    @PostMapping
+    public ResponseEntity<DocenteDTORespuesta> crear(@RequestBody @Valid DocenteDTOPeticion peticion) {
+        Docente docente = this.objMapeador.mappearDePeticionADocente(peticion);
+        Docente creado = this.objGestionarDocenteCU.crear(docente);
+        return new ResponseEntity<>(this.objMapeador.mappearDocenteARespuesta(creado), HttpStatus.CREATED);
+    }
 
     @GetMapping
     public ResponseEntity<List<DocenteDTORespuesta>> listar(@RequestParam(value = "nombres", required = false) String nombres) {

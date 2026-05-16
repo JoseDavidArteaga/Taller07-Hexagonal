@@ -36,9 +36,9 @@ public class RestApiExceptionHandler {
                                 .crearError(CodigoError.ENTIDAD_YA_EXISTE.getCodigo(),
                                                 String.format("%s, %s", CodigoError.ENTIDAD_YA_EXISTE.getLlaveMensaje(),
                                                                 ex.getMessage()),
-                                                HttpStatus.NOT_ACCEPTABLE.value())
+                                                HttpStatus.CONFLICT.value())
                                 .setUrl(req.getRequestURL().toString()).setMetodo(req.getMethod());
-                return new ResponseEntity<>(error, HttpStatus.NOT_ACCEPTABLE);
+                return new ResponseEntity<>(error, HttpStatus.CONFLICT);
         }
 
         @ExceptionHandler(ReglaNegocioExcepcion.class)

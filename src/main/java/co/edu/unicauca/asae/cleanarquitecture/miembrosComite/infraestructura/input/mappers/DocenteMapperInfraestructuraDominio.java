@@ -7,11 +7,24 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.dominio.modelos.Docente;
+import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.input.dtos.DocenteDTOPeticion;
 import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.input.dtos.DocenteDTORespuesta;
 import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.input.dtos.MiembroComiteDTORespuesta;
 
 @Component
 public class DocenteMapperInfraestructuraDominio {
+
+    public Docente mappearDePeticionADocente(DocenteDTOPeticion peticion) {
+        if (peticion == null) return null;
+        Docente docente = new Docente();
+        docente.setTipoIdentificacion(peticion.getTipoIdentificacion());
+        docente.setNumeroIdentificacion(peticion.getNumeroIdentificacion());
+        docente.setNombres(peticion.getNombres());
+        docente.setApellidos(peticion.getApellidos());
+        docente.setCorreo(peticion.getCorreo());
+        docente.setDepartamento(peticion.getDepartamento());
+        return docente;
+    }
 
     public DocenteDTORespuesta mappearDocenteARespuesta(Docente d) {
         if (d == null) return null;

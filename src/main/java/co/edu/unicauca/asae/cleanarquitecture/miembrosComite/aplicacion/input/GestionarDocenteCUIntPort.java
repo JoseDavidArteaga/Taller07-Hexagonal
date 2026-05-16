@@ -6,6 +6,8 @@ import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.dominio.modelos.Doc
 
 public interface GestionarDocenteCUIntPort {
 
+    Docente crear(Docente docente);
+
     List<Docente> listar();
 
     List<Docente> listarPorNombres(String nombres);
