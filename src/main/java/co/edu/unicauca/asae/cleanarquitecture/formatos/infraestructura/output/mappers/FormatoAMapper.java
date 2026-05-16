@@ -48,6 +48,7 @@ public class FormatoAMapper {
 
         if (dominio.getEstado() != null) {
             EstadoEntity estadoEntity = new EstadoEntity();
+            estadoEntity.setIdEstado(dominio.getEstado().getIdEstado());
             estadoEntity.setEstado(dominio.getEstado().getEstado());
             estadoEntity.setFormatoA(entity);
             entity.setEstado(estadoEntity);

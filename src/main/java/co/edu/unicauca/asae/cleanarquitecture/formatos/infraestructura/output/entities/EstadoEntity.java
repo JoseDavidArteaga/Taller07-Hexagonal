@@ -3,10 +3,9 @@ package co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.e
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -24,14 +23,14 @@ import lombok.Setter;
 public class EstadoEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idEstado")
     private Integer idEstado;
 
     @Column(nullable = false, length = 50)
     private String estado;
 
+    @MapsId
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idfk_formato_a", nullable = false, unique = true)
+    @JoinColumn(name = "idEstado")
     private FormatoAEntity formatoA;
 }
