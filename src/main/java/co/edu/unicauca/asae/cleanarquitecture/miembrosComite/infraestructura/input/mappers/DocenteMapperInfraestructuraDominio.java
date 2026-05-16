@@ -52,9 +52,21 @@ public class DocenteMapperInfraestructuraDominio {
         dto.setApellidos(d.getApellidos());
         dto.setCorreo(d.getCorreo());
         dto.setDepartamento(d.getDepartamento());
-        dto.setRol(null);
-        dto.setFechaInicioRol(null);
-        dto.setFechaFinRol(null);
+        // Extraer rol y fechas del historico activo o el primero disponible
+        if (d.getHistoricos() != null && !d.getHistoricos().isEmpty()) {
+            var historicoOpt = d.getHistoricos().stream()
+                    .filter(h -> h.getActivo() != null && h.getActivo())
+                    .findFirst()
+                    .or(() -> d.getHistoricos().stream().findFirst());
+            if (historicoOpt.isPresent()) {
+                var historico = historicoOpt.get();
+                dto.setRol(historico.getRol() != null ? historico.getRol().getRolAsignado() : null);
+                dto.setFechaInicioRol(historico.getFechaInicio() != null
+                        ? java.sql.Date.valueOf(historico.getFechaInicio()) : null);
+                dto.setFechaFinRol(historico.getFechaFin() != null
+                        ? java.sql.Date.valueOf(historico.getFechaFin()) : null);
+            }
+        }
         return dto;
     }
 

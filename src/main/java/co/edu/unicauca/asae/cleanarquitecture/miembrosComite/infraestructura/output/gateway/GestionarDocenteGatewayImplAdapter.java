@@ -49,7 +49,19 @@ public class GestionarDocenteGatewayImplAdapter implements GestionarDocenteGatew
     @Transactional(readOnly = true)
     public List<Docente> listar() {
         Iterable<DocenteEntity> iterable = this.objDocenteRepository.findAll();
-        return StreamSupport.stream(iterable.spliterator(), false)
+        List<DocenteEntity> entities = StreamSupport.stream(iterable.spliterator(), false)
+                .collect(Collectors.toList());
+        // Forzar carga lazy de historicos y roles para listar miembros del comite
+        entities.forEach(e -> {
+            if (e.getHistoricos() != null) {
+                e.getHistoricos().forEach(h -> {
+                    if (h.getRol() != null) {
+                        h.getRol().getRolAsignado();
+                    }
+                });
+            }
+        });
+        return entities.stream()
                 .map(this.docenteMapper::mapDeEntityADominio)
                 .collect(Collectors.toList());
     }

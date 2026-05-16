@@ -157,6 +157,13 @@ public class FormatoAMapperInfraestructuraDominio {
         dto.setIdObservacion(o.getIdObservacion());
         dto.setDescripcion(o.getDescripcion());
         dto.setFechaRegistro(o.getFechaRegistro());
+        if (o.getDocentes() != null) {
+            dto.setDocentes(o.getDocentes().stream()
+                    .map(this::mappearDocente)
+                    .collect(Collectors.toList()));
+        } else {
+            dto.setDocentes(new ArrayList<>());
+        }
         return dto;
     }
 }
