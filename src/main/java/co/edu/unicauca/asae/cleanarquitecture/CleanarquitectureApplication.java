@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -91,6 +92,12 @@ public class CleanarquitectureApplication {
     @Autowired(required = false)
     private Validator validator;
 
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    @Autowired(required = false)
+    private javax.persistence.EntityManager entityManager;
+
     public static void main(String[] args) {
         SpringApplication.run(CleanarquitectureApplication.class, args);
     }
@@ -120,7 +127,7 @@ public class CleanarquitectureApplication {
             try { ejecutarPruebasServiciosREST(); } catch (Exception e) { System.out.println("Error en servicios REST (servidor no disponible o error de red): " + e.getMessage()); }
 
             // PARTE 5: Lazy vs Eager
-            try { ejecutarPruebasLazyEager(); } catch (Exception e) { System.out.println("Error en pruebas lazy/eager: " + e.getMessage()); }
+            try { applicationContext.getBean(CleanarquitectureApplication.class).ejecutarPruebasLazyEager(); } catch (Exception e) { System.out.println("Error en pruebas lazy/eager: " + e.getMessage()); }
 
             System.out.println("\n============================================================");
             System.out.println("PRUEBAS FINALIZADAS");
@@ -259,7 +266,7 @@ public class CleanarquitectureApplication {
             System.out.println("XXXXXXXXXXXXX Se rechazaron verbos infinitivos validos");
         }
 
-        // 2.2 Verbos no reconocidos (son infinitivos validos en espanol, pero no estan en la lista de verbos comunes)
+        // 2.2 Verbos no reconocidos (no estan en la lista de verbos comunes)
         FormatoADTOPeticion v2 = new FormatoADTOPeticion();
         v2.setTitulo("Formato con verbos no reconocidos");
         v2.setObjetivos(List.of("Correr rapidamente", "Hacer cosas"));
@@ -274,7 +281,7 @@ public class CleanarquitectureApplication {
             System.out.println("XXXXXXXXXXXXX No se detectaron verbos no reconocidos");
         }
 
-        // 2.3 Verbo no reconocido (termina en ar pero no esta en lista)
+        // 2.3 Verbo no reconocido que ademas no esta en infinitivo
         FormatoADTOPeticion v3 = new FormatoADTOPeticion();
         v3.setTitulo("Formato con verbo no reconocido");
         v3.setObjetivos(List.of("Volare alto"));
@@ -284,12 +291,12 @@ public class CleanarquitectureApplication {
                 .anyMatch(v -> v.getPropertyPath().toString().contains("objetivos")
                         && v.getMessage().contains("verbo"));
         if (tieneViolacionesObjetivos3) {
-            System.out.println("    Verbo no reconocido detectado correctamente");
+            System.out.println("Verbo no reconocido detectado correctamente");
         } else {
             System.out.println("XXXXXXXXXXXXX No se detecto verbo no reconocido");
         }
 
-        System.out.println("  Validacion personalizada completada\n");
+        System.out.println("\nValidacion personalizada completada\n");
     }
 
     // ============================================================
@@ -298,17 +305,28 @@ public class CleanarquitectureApplication {
     private void ejecutarPruebasReglasNegocio() {
         System.out.println("=== 3. PRUEBAS REGLAS DE NEGOCIO ===\n");
 
-        // Crear datos base usando entidades JPA para evitar problema de cascade PERSIST en ManyToOne
-        DocenteEntity docenteBaseEntity = crearDocenteEntity("111111", "Docente", "Base", "docente.base@unicauca.edu.co", "Sistemas");
-        FormatoAEntity formatoBaseEntity = crearFormatoAEntity("Formato Base Reglas", List.of("Analizar requisitos"), docenteBaseEntity);
-        Docente docenteBaseDominio = mapDocenteEntityADominio(docenteBaseEntity);
+        // Crear datos base usando los casos de uso (evita detached entities)
+        Docente docenteBase = new Docente();
+        docenteBase.setTipoIdentificacion("CC");
+        docenteBase.setNumeroIdentificacion("111111");
+        docenteBase.setNombres("Docente");
+        docenteBase.setApellidos("Base");
+        docenteBase.setCorreo("docente.base@unicauca.edu.co");
+        docenteBase.setDepartamento("Sistemas");
+        Docente docenteBaseGuardado = gestionarDocenteCU.crear(docenteBase);
+
+        FormatoA formatoBase = new FormatoA();
+        formatoBase.setTitulo("Formato Base Reglas");
+        formatoBase.setObjetivos(List.of("Analizar requisitos", "Diseñar solucion", "Implementar sistema"));
+        formatoBase.setDocente(docenteBaseGuardado);
+        FormatoA formatoBaseGuardado = gestionarFormatoACU.crear(formatoBase);
 
         // Regla 1: No se puede crear un formato A con un titulo que ya existe
         System.out.println("  Regla 1: Titulo duplicado...");
         FormatoA formatoDuplicado = new FormatoA();
-        formatoDuplicado.setTitulo(formatoBaseEntity.getTitulo());
-        formatoDuplicado.setObjetivos(List.of("Analizar requisitos"));
-        formatoDuplicado.setDocente(docenteBaseDominio);
+        formatoDuplicado.setTitulo(formatoBaseGuardado.getTitulo());
+        formatoDuplicado.setObjetivos(List.of("Analizar requisitos", "Diseñar solucion", "Implementar sistema"));
+        formatoDuplicado.setDocente(docenteBaseGuardado);
         try {
             gestionarFormatoACU.crear(formatoDuplicado);
             System.out.println("     XXXXXXXXXXXXX No se lanzo excepcion de entidad ya existe");
@@ -322,7 +340,7 @@ public class CleanarquitectureApplication {
         System.out.println("  Regla 2: Formato sin docente...");
         FormatoA formatoSinDocente = new FormatoA();
         formatoSinDocente.setTitulo("Formato Sin Docente Unico");
-        formatoSinDocente.setObjetivos(List.of("Analizar requisitos"));
+        formatoSinDocente.setObjetivos(List.of("Analizar requisitos", "Diseñar solucion", "Implementar sistema"));
         formatoSinDocente.setDocente(null);
         try {
             gestionarFormatoACU.crear(formatoSinDocente);
@@ -340,7 +358,7 @@ public class CleanarquitectureApplication {
         docenteDuplicado.setNumeroIdentificacion("222222");
         docenteDuplicado.setNombres("Otro");
         docenteDuplicado.setApellidos("Docente");
-        docenteDuplicado.setCorreo(docenteBaseEntity.getCorreo());
+        docenteDuplicado.setCorreo(docenteBaseGuardado.getCorreo());
         docenteDuplicado.setDepartamento("Sistemas");
         try {
             gestionarDocenteCU.crear(docenteDuplicado);
@@ -354,7 +372,7 @@ public class CleanarquitectureApplication {
         // Regla 4: Debe especificar al menos un docente que registra la observacion
         System.out.println("  Regla 4: Observacion sin docentes...");
         try {
-            gestionarObservacionCU.crear("Observacion sin docentes", formatoBaseEntity.getIdFormatoA(), new ArrayList<>());
+            gestionarObservacionCU.crear("Observacion sin docentes", formatoBaseGuardado.getIdFormatoA(), new ArrayList<>());
             System.out.println("     XXXXXXXXXXXXX No se lanzo excepcion de regla de negocio");
         } catch (ReglaNegocioExcepcion e) {
             System.out.println("      ReglaNegocioExcepcion lanzada correctamente: " + e.getMessage());
@@ -396,7 +414,7 @@ public class CleanarquitectureApplication {
         System.out.println("  Servicio 1: POST /api/formatosA");
         FormatoADTOPeticion formatoPeticion = new FormatoADTOPeticion();
         formatoPeticion.setTitulo("Formato REST Generico");
-        formatoPeticion.setObjetivos(List.of("Analizar requisitos", "Diseñar solucion"));
+        formatoPeticion.setObjetivos(List.of("Analizar requisitos", "Diseñar solucion", "Implementar sistema"));
         DocenteFormatoADTOPeticion docenteFormato = crearDocenteDTOValido();
         docenteFormato.setCorreo("rest.docente.formato@unicauca.edu.co");
         docenteFormato.setNumeroIdentificacion("444444");
@@ -409,7 +427,7 @@ public class CleanarquitectureApplication {
         System.out.println("  Servicio 2: POST /api/formatosA/ppa");
         FormatoPPADTOPeticion ppaPeticion = new FormatoPPADTOPeticion();
         ppaPeticion.setTitulo("Formato REST PPA");
-        ppaPeticion.setObjetivos(List.of("Analizar requisitos"));
+        ppaPeticion.setObjetivos(List.of("Analizar requisitos", "Diseñar solucion", "Implementar sistema"));
         DocenteFormatoADTOPeticion docentePPA = crearDocenteDTOValido();
         docentePPA.setCorreo("rest.ppa@unicauca.edu.co");
         docentePPA.setNumeroIdentificacion("555555");
@@ -425,7 +443,7 @@ public class CleanarquitectureApplication {
         System.out.println("  Servicio 3: POST /api/formatosA/tia");
         FormatoTIADTOPeticion tiaPeticion = new FormatoTIADTOPeticion();
         tiaPeticion.setTitulo("Formato REST TIA");
-        tiaPeticion.setObjetivos(List.of("Implementar sistema"));
+        tiaPeticion.setObjetivos(List.of("Analizar requisitos", "Diseñar solucion", "Implementar sistema"));
         DocenteFormatoADTOPeticion docenteTIA = crearDocenteDTOValido();
         docenteTIA.setCorreo("rest.tia@unicauca.edu.co");
         docenteTIA.setNumeroIdentificacion("666666");
@@ -472,8 +490,8 @@ public class CleanarquitectureApplication {
     // ============================================================
     // 5. PRUEBAS DE LAZY VS EAGER
     // ============================================================
-    @Transactional(readOnly = true)
-    private void ejecutarPruebasLazyEager() {
+    @Transactional
+    public void ejecutarPruebasLazyEager() {
         System.out.println("=== 5. PRUEBAS LAZY VS EAGER ===\n");
 
         // Crear datos de prueba
@@ -489,7 +507,7 @@ public class CleanarquitectureApplication {
         FormatoAEntity formato = new FormatoAEntity();
         formato.setTitulo("Formato Lazy Eager Test");
         formato.setFecha(new Date());
-        formato.setObjetivos(List.of("Analizar requisitos", "Implementar sistema"));
+        formato.setObjetivos(List.of("Analizar requisitos", "Diseñar solucion", "Implementar sistema"));
         formato.setDocente(docente);
 
         EstadoEntity estado = new EstadoEntity();
@@ -503,13 +521,23 @@ public class CleanarquitectureApplication {
         evaluacion.setConcepto("Aprobado");
         evaluacion.setFechaRegistro(new Date());
         evaluacion.setFormatoA(formato);
-        evaluacionRepository.save(evaluacion);
+        evaluacion = evaluacionRepository.save(evaluacion);
+
+        // Mantener ambos lados de la relación bidireccional en memoria
+        formato.setEvaluaciones(new ArrayList<>());
+        formato.getEvaluaciones().add(evaluacion);
 
         Integer idFormato = formato.getIdFormatoA();
+        Integer idEvaluacion = evaluacion.getIdEvaluacion();
+        Integer idDocente = docente.getIdPersona();
 
-        // Forzar flush y clear para simular una nueva sesion
-        // Nota: como estamos en una sola transaccion, no podemos hacer entityManager.clear() sin inyectarlo.
-        // Haremos las consultas y verificaremos Hibernate.isInitialized
+        // Forzar escritura a BD y limpiar el caché de primer nivel para que
+        // las siguientes consultas carguen entidades frescas desde la BD.
+        // Esto es esencial para poder observar comportamiento LAZY vs EAGER real.
+        if (entityManager != null) {
+            entityManager.flush();
+            entityManager.clear();
+        }
 
         System.out.println("  5.1 Consultar FormatoA por ID (estado EAGER, evaluaciones/docente LAZY)");
         System.out.println("      Esperado: se ve query de FormatoA y Estado (EAGER), pero NO de Evaluaciones ni Docente");
@@ -534,16 +562,44 @@ public class CleanarquitectureApplication {
 
         System.out.println("\n  5.3 Consultar con @EntityGraph (findDetalleByIdFormatoA) - debe cargar todo junto");
         System.out.println("      Esperado: query con JOINs para docente, estado y evaluaciones");
-        Optional<FormatoAEntity> formatoDetalle = formatoARepository.findDetalleByIdFormatoA(idFormato);
-        if (formatoDetalle.isPresent()) {
-            FormatoAEntity f = formatoDetalle.get();
-            System.out.println("      -> Formato cargado con EntityGraph. Titulo: " + f.getTitulo());
-            System.out.println("      -> Evaluaciones inicializadas: " + Hibernate.isInitialized(f.getEvaluaciones()) + " (esperado: true por EntityGraph)");
+        try {
+            Optional<FormatoAEntity> formatoDetalle = formatoARepository.findDetalleByIdFormatoA(idFormato);
+            if (formatoDetalle.isPresent()) {
+                FormatoAEntity f = formatoDetalle.get();
+                System.out.println("      -> Formato cargado con EntityGraph. Titulo: " + f.getTitulo());
+                System.out.println("      -> Evaluaciones inicializadas: " + Hibernate.isInitialized(f.getEvaluaciones()) + " (esperado: true por EntityGraph)");
+            }
+        } catch (Exception e) {
+            Throwable cause = e;
+            boolean isMultipleBag = false;
+            while (cause != null) {
+                if (cause instanceof org.hibernate.loader.MultipleBagFetchException) {
+                    isMultipleBag = true;
+                    break;
+                }
+                cause = cause.getCause();
+            }
+            if (isMultipleBag) {
+                System.out.println("      -> MultipleBagFetchException: Hibernate no permite cargar multiples List (@OneToMany/@ManyToMany) en un solo query.");
+                System.out.println("          Esto ocurre porque evaluaciones, observaciones y docentes son bags.");
+            } else {
+                throw e;
+            }
+        }
+
+        System.out.println("\n  5.3b Alternativa: EntityGraph simple (docente + estado, sin bags)");
+        System.out.println("      Esperado: query con JOIN a Docente y Estado, pero evaluaciones siguen LAZY");
+        List<FormatoAEntity> formatosConDocente = formatoARepository.findFormatosConDocenteByDocente_IdPersona(idDocente);
+        if (!formatosConDocente.isEmpty()) {
+            FormatoAEntity f = formatosConDocente.get(0);
+            System.out.println("      -> Formato cargado. Titulo: " + f.getTitulo());
+            System.out.println("      -> Docente inicializado: " + Hibernate.isInitialized(f.getDocente()) + " (esperado: true por EntityGraph)");
+            System.out.println("      -> Evaluaciones inicializadas: " + Hibernate.isInitialized(f.getEvaluaciones()) + " (esperado: false, LAZY)");
         }
 
         System.out.println("\n  5.4 Consultar Docente con @EntityGraph (findConFormatosByIdPersona)");
         System.out.println("      Esperado: query que carga docente y sus formatosA juntos");
-        Optional<DocenteEntity> docenteConFormatos = docenteRepository.findConFormatosByIdPersona(docente.getIdPersona());
+        Optional<DocenteEntity> docenteConFormatos = docenteRepository.findConFormatosByIdPersona(idDocente);
         if (docenteConFormatos.isPresent()) {
             DocenteEntity d = docenteConFormatos.get();
             System.out.println("      -> Docente cargado. Nombres: " + d.getNombres());
@@ -551,7 +607,7 @@ public class CleanarquitectureApplication {
         }
 
         System.out.println("\n  5.5 EvaluacionEntity: observaciones LAZY");
-        Optional<EvaluacionEntity> evalOpt = evaluacionRepository.findById(evaluacion.getIdEvaluacion());
+        Optional<EvaluacionEntity> evalOpt = evaluacionRepository.findById(idEvaluacion);
         if (evalOpt.isPresent()) {
             EvaluacionEntity ev = evalOpt.get();
             boolean observacionesInit = Hibernate.isInitialized(ev.getObservaciones());
@@ -590,7 +646,9 @@ public class CleanarquitectureApplication {
         f.setTitulo(titulo);
         f.setFecha(new Date());
         f.setObjetivos(objetivos);
-        f.setDocente(docente);
+        // Usar getReferenceById para evitar detached entity al persistir formato
+        DocenteEntity docenteManaged = docenteRepository.getReferenceById(docente.getIdPersona());
+        f.setDocente(docenteManaged);
         return formatoARepository.save(f);
     }
 

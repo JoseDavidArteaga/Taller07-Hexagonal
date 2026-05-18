@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.output.entities.DocenteEntity;
 
 
-public interface DocenteRepositoryInt extends CrudRepository<DocenteEntity, Integer> {
+public interface DocenteRepositoryInt extends JpaRepository<DocenteEntity, Integer> {
 
     boolean existsByCorreo(String correo);
 
