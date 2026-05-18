@@ -26,9 +26,12 @@ public interface FormatoARepositoryInt extends CrudRepository<FormatoAEntity, In
 
     List<FormatoAEntity> findByDocente_IdPersona(Integer idPersona);
 
+    @EntityGraph(attributePaths = {"docente", "estado"})
+    List<FormatoAEntity> findFormatosConDocenteByDocente_IdPersona(Integer idPersona);
+
     List<FormatoAEntity> findByDocente_NombresIgnoreCase(String nombreDocente);
 
-    @EntityGraph(attributePaths = {"docente", "estado", "evaluaciones"})
+    @EntityGraph(attributePaths = {"docente", "estado", "evaluaciones", "evaluaciones.observaciones", "evaluaciones.observaciones.docentes"})
     Optional<FormatoAEntity> findDetalleByIdFormatoA(Integer idFormatoA);
 
     @Query("SELECT new co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.dto.FormatoADetalleDTO(" +

@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.infraestructura.output.entities.DocenteEntity;
 
@@ -30,4 +32,7 @@ public interface DocenteRepositoryInt extends CrudRepository<DocenteEntity, Inte
 
     @EntityGraph(attributePaths = {"formatosA"})
     Optional<DocenteEntity> findConFormatosByIdPersona(Integer idPersona);
+
+    @Query(value = "SELECT COUNT(*) > 0 FROM Docentes WHERE correo = :correo", nativeQuery = true)
+    Integer existsByCorreoNative(@Param("correo") String correo);
 }

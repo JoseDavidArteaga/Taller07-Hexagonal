@@ -90,7 +90,7 @@ public class GestionarFormatoAGatewayImplAdapter implements GestionarFormatoAGat
     @Override
     @Transactional(readOnly = true)
     public List<FormatoA> listarPorDocente(Integer idDocente) {
-        List<FormatoAEntity> entities = this.objFormatoARepository.findByDocente_IdPersona(idDocente);
+        List<FormatoAEntity> entities = this.objFormatoARepository.findFormatosConDocenteByDocente_IdPersona(idDocente);
         return entities.stream()
                 .map(this.formatoAMapper::mapDeEntityADominio)
                 .collect(Collectors.toList());

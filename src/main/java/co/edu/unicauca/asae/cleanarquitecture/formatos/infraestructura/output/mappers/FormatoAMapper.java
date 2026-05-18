@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.stereotype.Component;
 
 import co.edu.unicauca.asae.cleanarquitecture.miembrosComite.dominio.modelos.Docente;
@@ -23,6 +26,9 @@ import co.edu.unicauca.asae.cleanarquitecture.observaciones.infraestructura.outp
 
 @Component
 public class FormatoAMapper {
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public FormatoAEntity mapDeDominioAEntity(FormatoA dominio) {
         if (dominio == null) return null;
@@ -159,12 +165,21 @@ public class FormatoAMapper {
         dominio.setIdObservacion(entity.getIdObservacion());
         dominio.setDescripcion(entity.getDescripcion());
         dominio.setFechaRegistro(entity.getFechaRegistro());
+        if (entity.getDocentes() != null) {
+            dominio.setDocentes(entity.getDocentes().stream()
+                    .map(this::mapDocenteDeEntityADominioSimple)
+                    .collect(Collectors.toList()));
+        }
         return dominio;
     }
 
     private DocenteEntity mapDocenteDeDominioAEntitySimple(Docente dominio) {
+        if (dominio == null) return null;
+        // Si el docente ya existe (tiene ID), obtener una referencia managed para evitar detached entity
+        if (dominio.getIdPersona() != null && this.entityManager != null) {
+            return this.entityManager.getReference(DocenteEntity.class, dominio.getIdPersona());
+        }
         DocenteEntity entity = new DocenteEntity();
-        entity.setIdPersona(dominio.getIdPersona());
         entity.setTipoIdentificacion(dominio.getTipoIdentificacion());
         entity.setNumeroIdentificacion(dominio.getNumeroIdentificacion());
         entity.setNombres(dominio.getNombres());

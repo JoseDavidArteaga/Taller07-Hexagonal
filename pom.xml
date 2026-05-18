@@ -14,10 +14,7 @@
 	<name>cleanarquitecture</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
-		<java.version>21</java.version>
-		<!-- Override Spring Framework to 5.3.39+ so its bundled ASM 9.7
-		     can parse Java 21 class files (major version 65).
-		     Spring Boot 2.7.x ships ASM 9.3 which tops out at Java 17 (61). -->
+		<java.version>19</java.version>
 		<spring-framework.version>5.3.39</spring-framework.version>
 	</properties>
 	<dependencies>

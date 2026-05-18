@@ -29,7 +29,8 @@ public class GestionarDocenteGatewayImplAdapter implements GestionarDocenteGatew
     @Override
     @Transactional(readOnly = true)
     public boolean existeDocentePorCorreo(String correo) {
-        return this.objDocenteRepository.existsByCorreo(correo);
+        Integer resultado = this.objDocenteRepository.existsByCorreoNative(correo);
+        return resultado != null && resultado > 0;
     }
 
     @Override
