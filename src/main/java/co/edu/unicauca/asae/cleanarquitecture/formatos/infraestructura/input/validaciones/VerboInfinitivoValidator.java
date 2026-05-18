@@ -9,7 +9,7 @@ import javax.validation.ConstraintValidatorContext;
 
 public class VerboInfinitivoValidator implements ConstraintValidator<VerboInfinitivo, String> {
 
-    private static final Pattern PATRON_INFINITIVO = Pattern.compile("^(\\w+)(ar|er|ir)$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern PATRON_INFINITIVO = Pattern.compile("^(\\p{L}+)(ar|er|ir)$", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CHARACTER_CLASS);
 
     private static final List<String> VERBOS_COMUNES = Arrays.asList(
             "analizar", "diseñar", "implementar", "desarrollar", "construir",

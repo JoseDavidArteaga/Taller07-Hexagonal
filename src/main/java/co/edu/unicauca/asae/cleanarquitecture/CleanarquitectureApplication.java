@@ -259,9 +259,9 @@ public class CleanarquitectureApplication {
             System.out.println("XXXXXXXXXXXXX Se rechazaron verbos infinitivos validos");
         }
 
-        // 2.2 Verbo invalido (no termina en ar/er/ir)
+        // 2.2 Verbos no reconocidos (son infinitivos validos en espanol, pero no estan en la lista de verbos comunes)
         FormatoADTOPeticion v2 = new FormatoADTOPeticion();
-        v2.setTitulo("Formato con verbo invalido");
+        v2.setTitulo("Formato con verbos no reconocidos");
         v2.setObjetivos(List.of("Correr rapidamente", "Hacer cosas"));
         v2.setDocente(crearDocenteDTOValido());
         Set<ConstraintViolation<FormatoADTOPeticion>> violaciones2 = validator.validate(v2);
@@ -269,9 +269,9 @@ public class CleanarquitectureApplication {
                 .anyMatch(v -> v.getPropertyPath().toString().contains("objetivos")
                         && v.getMessage().contains("verbo"));
         if (tieneViolacionesObjetivos2) {
-            System.out.println(" Verbo no infinitivo detectado correctamente");
+            System.out.println(" Verbos no reconocidos detectados correctamente");
         } else {
-            System.out.println("XXXXXXXXXXXXX No se detecto verbo invalido");
+            System.out.println("XXXXXXXXXXXXX No se detectaron verbos no reconocidos");
         }
 
         // 2.3 Verbo no reconocido (termina en ar pero no esta en lista)
