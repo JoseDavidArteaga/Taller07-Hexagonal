@@ -162,12 +162,12 @@ public class CleanarquitectureApplication {
         f3.setDocente(crearDocenteDTOValido());
         validarYDeterner(f3, "objetivos", "formatoA.objetivos.empty");
 
-        // 1.4 Docente nulo
+        // 1.4 Objetivos con menos de 3 elementos
         FormatoADTOPeticion f4 = new FormatoADTOPeticion();
         f4.setTitulo("Formato valido para prueba");
         f4.setObjetivos(List.of("Analizar requisitos"));
-        f4.setDocente(null);
-        validarYDeterner(f4, "docente", "formatoA.docente.empty");
+        f4.setDocente(crearDocenteDTOValido());
+        validarYDeterner(f4, "objetivos", "formatoA.objetivos.min");
 
         // 1.5 Correo invalido del docente
         DocenteFormatoADTOPeticion docenteInvalido = crearDocenteDTOValido();
@@ -195,12 +195,10 @@ public class CleanarquitectureApplication {
         obs1.setIdsDocentes(List.of(1));
         validarYDeterner(obs1, "descripcion", "observacion.descripcion.size");
 
-        // 1.8 Docentes de observacion vacios
-        ObservacionDTOPeticion obs2 = new ObservacionDTOPeticion();
-        obs2.setDescripcion("Observacion valida");
-        obs2.setIdFormatoA(1);
-        obs2.setIdsDocentes(new ArrayList<>());
-        validarYDeterner(obs2, "idsDocentes", "observacion.docentes.empty");
+        // 1.8 Estado vacio (en vez de nulo)
+        ActualizarEstadoFormatoADTOPeticion act2 = new ActualizarEstadoFormatoADTOPeticion();
+        act2.setEstado("");
+        validarYDeterner(act2, "estado", "formatoA.estado.size");
 
         // 1.9 Estado nulo al actualizar
         ActualizarEstadoFormatoADTOPeticion act1 = new ActualizarEstadoFormatoADTOPeticion();

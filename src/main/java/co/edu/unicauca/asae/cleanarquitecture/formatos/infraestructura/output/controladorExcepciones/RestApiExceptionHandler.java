@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ControllerAdvice
 public class RestApiExceptionHandler {
 
+        // Manejo de excepciones genéricas
         @ExceptionHandler(Exception.class)
         public ResponseEntity<Error> handleGenericException(final HttpServletRequest req,
                         final Exception ex, final Locale locale) {
@@ -29,6 +30,7 @@ public class RestApiExceptionHandler {
                 return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        // Manejo de excepciones específicas
         @ExceptionHandler(EntidadYaExisteException.class)
         public ResponseEntity<Error> handleGenericException(final HttpServletRequest req,
                         final EntidadYaExisteException ex) {
@@ -41,6 +43,7 @@ public class RestApiExceptionHandler {
                 return new ResponseEntity<>(error, HttpStatus.CONFLICT);
         }
 
+        // Manejo de excepciones específicas
         @ExceptionHandler(ReglaNegocioExcepcion.class)
         public ResponseEntity<Error> handleGenericException(final HttpServletRequest req,
                         final ReglaNegocioExcepcion ex, final Locale locale) {

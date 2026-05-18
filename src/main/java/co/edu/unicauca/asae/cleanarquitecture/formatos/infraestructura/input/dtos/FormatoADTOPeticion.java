@@ -27,7 +27,5 @@ public class FormatoADTOPeticion {
     @Size(min = 3, message = "{formatoA.objetivos.min}")
     private List<@VerboInfinitivo String> objetivos;
 
-    @NotNull(message = "{formatoA.docente.empty}")
-    @Valid
     private DocenteFormatoADTOPeticion docente;
 }

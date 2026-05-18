@@ -24,6 +24,5 @@ public class ObservacionDTOPeticion {
     @NotNull(message = "{observacion.idFormatoA.empty}")
     private Integer idFormatoA;
 
-    @NotEmpty(message = "{observacion.docentes.empty}")
     private List<Integer> idsDocentes;
 }

@@ -1,8 +1,8 @@
 {
   "info": {
-    "_postman_id": "asae-taller07-hex-001",
+    "_postman_id": "asae-taller07-hex-002",
     "name": "ASAE Taller 07 - Pruebas Hexagonal",
-    "description": "Coleccion organizada para validar los 5 requisitos del taller: 1) Validaciones automaticas, 2) Validacion personalizada (VerboInfinitivo), 3) Reglas de negocio, 4) 8 Servicios REST, 5) Lazy vs Eager. Ejecutar con Collection Runner en orden secuencial.",
+    "description": "Coleccion organizada para validar los 5 requisitos del taller: 1) Validaciones automaticas, 2) Validacion personalizada (VerboInfinitivo), 3) Reglas de negocio, 4) 8 Servicios REST, 5) Lazy vs Eager. Las reglas de negocio estan configuradas para llegar al caso de uso y retornar el JSON completo del controlador de excepciones.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -50,9 +50,9 @@
           "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 400',function(){pm.response.to.have.status(400);});","pm.test('Error objetivos presente',function(){pm.expect(pm.response.json()).to.have.property('objetivos');});"]}}]
         },
         {
-          "name": "VA4 - Docente nulo",
-          "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"titulo\":\"Formato valido para prueba\",\"objetivos\":[\"Analizar requisitos\",\"Diseñar solucion\",\"Implementar sistema\"],\"docente\":null}"},"url":"{{baseUrl}}/formatosA"},
-          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 400',function(){pm.response.to.have.status(400);});","pm.test('Error docente presente',function(){pm.expect(pm.response.json()).to.have.property('docente');});"]}}]
+          "name": "VA4 - Objetivos menos de 3",
+          "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"titulo\":\"Formato valido para prueba\",\"objetivos\":[\"Analizar requisitos\"],\"docente\":{\"tipoIdentificacion\":\"CC\",\"numeroIdentificacion\":\"123\",\"nombres\":\"Ana\",\"apellidos\":\"Diaz\",\"correo\":\"ana4@unicauca.edu.co\",\"departamento\":\"Sistemas\"}}"},"url":"{{baseUrl}}/formatosA"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 400',function(){pm.response.to.have.status(400);});","pm.test('Error objetivos presente',function(){pm.expect(pm.response.json()).to.have.property('objetivos');});"]}}]
         },
         {
           "name": "VA5 - Correo docente invalido",
@@ -70,9 +70,9 @@
           "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 400',function(){pm.response.to.have.status(400);});","pm.test('Error descripcion presente',function(){pm.expect(pm.response.json()).to.have.property('descripcion');});"]}}]
         },
         {
-          "name": "VA8 - Docentes observacion vacios",
-          "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"descripcion\":\"Observacion valida\",\"idFormatoA\":{{formatoId}},\"idsDocentes\":[]}"},"url":"{{baseUrl}}/observaciones"},
-          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 400',function(){pm.response.to.have.status(400);});","pm.test('Error idsDocentes presente',function(){pm.expect(pm.response.json()).to.have.property('idsDocentes');});"]}}]
+          "name": "VA8 - Estado vacio (actualizar)",
+          "request": {"method":"PUT","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"estado\":\"\"}"},"url":"{{baseUrl}}/formatosA/{{formatoId}}/estado"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 400',function(){pm.response.to.have.status(400);});","pm.test('Error estado presente',function(){pm.expect(pm.response.json()).to.have.property('estado');});"]}}]
         },
         {
           "name": "VA9 - Estado nulo (actualizar)",
@@ -112,22 +112,22 @@
         {
           "name": "RN1 - Titulo duplicado",
           "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"titulo\":\"{{formatoTitulo}}\",\"objetivos\":[\"Analizar requisitos\",\"Diseñar solucion\",\"Implementar sistema\"],\"docente\":{\"idPersona\":{{docenteId}},\"tipoIdentificacion\":\"CC\",\"numeroIdentificacion\":\"123\",\"nombres\":\"Ana\",\"apellidos\":\"Diaz\",\"correo\":\"docente.base@unicauca.edu.co\",\"departamento\":\"Sistemas\"}}"},"url":"{{baseUrl}}/formatosA"},
-          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 409 CONFLICT',function(){pm.response.to.have.status(409);});"]}}]
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 409 CONFLICT',function(){pm.response.to.have.status(409);});","var j=pm.response.json();","pm.test('JSON completo con codigoError',function(){pm.expect(j).to.have.property('codigoError');pm.expect(j).to.have.property('mensaje');pm.expect(j).to.have.property('codigoHttp');pm.expect(j).to.have.property('url');pm.expect(j).to.have.property('metodo');});"]}}]
         },
         {
-          "name": "RN2 - Formato sin docente",
+          "name": "RN2 - Formato sin docente (ReglaNegocio)",
           "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"titulo\":\"Formato Sin Docente Unico\",\"objetivos\":[\"Analizar requisitos\",\"Diseñar solucion\",\"Implementar sistema\"],\"docente\":null}"},"url":"{{baseUrl}}/formatosA"},
-          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 400 o 409',function(){var c=pm.response.code;pm.expect(c).to.be.oneOf([400,409]);});"]}}]
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 400 BAD REQUEST',function(){pm.response.to.have.status(400);});","var j=pm.response.json();","pm.test('JSON completo con codigoError',function(){pm.expect(j).to.have.property('codigoError');pm.expect(j).to.have.property('mensaje');pm.expect(j).to.have.property('codigoHttp');pm.expect(j).to.have.property('url');pm.expect(j).to.have.property('metodo');});","pm.test('Mensaje contiene docente director',function(){pm.expect(j.mensaje).to.match(/docente director/i);});"]}}]
         },
         {
           "name": "RN3 - Correo docente duplicado",
-          "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"tipoIdentificacion\":\"CC\",\"numeroIdentificacion\":\"222222\",\"nombres\":\"Otro\",\"apellidos\":\"Docente\",\"correo\":\"{{docenteCorreo}}\",\"departamento\":\"Sistemas\"}"},"url":"{{baseUrl}}/docentes"},
-          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 409 CONFLICT',function(){pm.response.to.have.status(409);});"]}}]
+          "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"tipoIdentificacion\":\"CC\",\"numeroIdentificacion\":\"222222\",\"nombres\":\"Otro\",\"apellidos\":\"Docente\",\"correo\":\"docente.base@unicauca.edu.co\",\"departamento\":\"Sistemas\"}"},"url":"{{baseUrl}}/docentes"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 409 CONFLICT',function(){pm.response.to.have.status(409);});","var j=pm.response.json();","pm.test('JSON completo con codigoError',function(){pm.expect(j).to.have.property('codigoError');pm.expect(j).to.have.property('mensaje');pm.expect(j).to.have.property('codigoHttp');pm.expect(j).to.have.property('url');pm.expect(j).to.have.property('metodo');});","pm.test('Mensaje contiene correo duplicado',function(){pm.expect(j.mensaje).to.match(/correo/i);});"]}}]
         },
         {
-          "name": "RN4 - Observacion sin docentes",
+          "name": "RN4 - Observacion sin docentes (ReglaNegocio)",
           "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"descripcion\":\"Observacion sin docentes\",\"idFormatoA\":{{formatoId}},\"idsDocentes\":[]}"},"url":"{{baseUrl}}/observaciones"},
-          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 400',function(){pm.response.to.have.status(400);});"]}}]
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 400 BAD REQUEST',function(){pm.response.to.have.status(400);});","var j=pm.response.json();","pm.test('JSON completo con codigoError',function(){pm.expect(j).to.have.property('codigoError');pm.expect(j).to.have.property('mensaje');pm.expect(j).to.have.property('codigoHttp');pm.expect(j).to.have.property('url');pm.expect(j).to.have.property('metodo');});","pm.test('Mensaje contiene observacion',function(){pm.expect(j.mensaje).to.match(/observacion|docente/i);});"]}}]
         }
       ]
     },
