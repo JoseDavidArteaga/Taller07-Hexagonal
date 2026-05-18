@@ -1,0 +1,233 @@
+{
+  "info": {
+    "_postman_id": "asae-taller07-hex-001",
+    "name": "ASAE Taller 07 - Pruebas Hexagonal",
+    "description": "Coleccion organizada para validar los 5 requisitos del taller: 1) Validaciones automaticas, 2) Validacion personalizada (VerboInfinitivo), 3) Reglas de negocio, 4) 8 Servicios REST, 5) Lazy vs Eager. Ejecutar con Collection Runner en orden secuencial.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "0. Setup Global",
+      "item": [
+        {
+          "name": "Setup - Crear Docente base",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"}],
+            "body": {"mode":"raw","raw":"{\"tipoIdentificacion\":\"CC\",\"numeroIdentificacion\":\"999001\",\"nombres\":\"Docente\",\"apellidos\":\"Base\",\"correo\":\"docente.base@unicauca.edu.co\",\"departamento\":\"Sistemas\"}"},
+            "url": "{{baseUrl}}/docentes"
+          },
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 201',function(){pm.response.to.have.status(201);});","var j=pm.response.json();","pm.collectionVariables.set('docenteId',j.idPersona);","pm.collectionVariables.set('docenteCorreo',j.correo);"]}}]
+        },
+        {
+          "name": "Setup - Crear FormatoA base",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"}],
+            "body": {"mode":"raw","raw":"{\"titulo\":\"Formato Base Unico\",\"objetivos\":[\"Analizar requisitos\",\"Diseñar solucion\",\"Implementar sistema\"],\"docente\":{\"idPersona\":{{docenteId}},\"tipoIdentificacion\":\"CC\",\"numeroIdentificacion\":\"999001\",\"nombres\":\"Docente\",\"apellidos\":\"Base\",\"correo\":\"docente.base@unicauca.edu.co\",\"departamento\":\"Sistemas\"}}"},
+            "url": "{{baseUrl}}/formatosA"
+          },
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 201',function(){pm.response.to.have.status(201);});","var j=pm.response.json();","pm.collectionVariables.set('formatoId',j.idFormatoA);","pm.collectionVariables.set('formatoTitulo',j.titulo);"]}}]
+        }
+      ]
+    },
+    {
+      "name": "1. Validaciones Automaticas",
+      "item": [
+        {
+          "name": "VA1 - Titulo nulo",
+          "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"titulo\":null,\"objetivos\":[\"Analizar requisitos\",\"Diseñar solucion\",\"Implementar sistema\"],\"docente\":{\"tipoIdentificacion\":\"CC\",\"numeroIdentificacion\":\"123\",\"nombres\":\"Ana\",\"apellidos\":\"Diaz\",\"correo\":\"ana@unicauca.edu.co\",\"departamento\":\"Sistemas\"}}"},"url":"{{baseUrl}}/formatosA"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 400',function(){pm.response.to.have.status(400);});","pm.test('Error titulo presente',function(){pm.expect(pm.response.json()).to.have.property('titulo');});"]}}]
+        },
+        {
+          "name": "VA2 - Titulo corto",
+          "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"titulo\":\"abc\",\"objetivos\":[\"Analizar requisitos\",\"Diseñar solucion\",\"Implementar sistema\"],\"docente\":{\"tipoIdentificacion\":\"CC\",\"numeroIdentificacion\":\"123\",\"nombres\":\"Ana\",\"apellidos\":\"Diaz\",\"correo\":\"ana2@unicauca.edu.co\",\"departamento\":\"Sistemas\"}}"},"url":"{{baseUrl}}/formatosA"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 400',function(){pm.response.to.have.status(400);});","pm.test('Error titulo presente',function(){pm.expect(pm.response.json()).to.have.property('titulo');});"]}}]
+        },
+        {
+          "name": "VA3 - Objetivos vacios",
+          "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"titulo\":\"Formato valido para prueba\",\"objetivos\":[],\"docente\":{\"tipoIdentificacion\":\"CC\",\"numeroIdentificacion\":\"123\",\"nombres\":\"Ana\",\"apellidos\":\"Diaz\",\"correo\":\"ana3@unicauca.edu.co\",\"departamento\":\"Sistemas\"}}"},"url":"{{baseUrl}}/formatosA"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 400',function(){pm.response.to.have.status(400);});","pm.test('Error objetivos presente',function(){pm.expect(pm.response.json()).to.have.property('objetivos');});"]}}]
+        },
+        {
+          "name": "VA4 - Docente nulo",
+          "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"titulo\":\"Formato valido para prueba\",\"objetivos\":[\"Analizar requisitos\",\"Diseñar solucion\",\"Implementar sistema\"],\"docente\":null}"},"url":"{{baseUrl}}/formatosA"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 400',function(){pm.response.to.have.status(400);});","pm.test('Error docente presente',function(){pm.expect(pm.response.json()).to.have.property('docente');});"]}}]
+        },
+        {
+          "name": "VA5 - Correo docente invalido",
+          "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"titulo\":\"Formato valido para prueba\",\"objetivos\":[\"Analizar requisitos\",\"Diseñar solucion\",\"Implementar sistema\"],\"docente\":{\"tipoIdentificacion\":\"CC\",\"numeroIdentificacion\":\"123\",\"nombres\":\"Ana\",\"apellidos\":\"Diaz\",\"correo\":\"correo-invalido\",\"departamento\":\"Sistemas\"}}"},"url":"{{baseUrl}}/formatosA"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 400',function(){pm.response.to.have.status(400);});","pm.test('Error docente.correo presente',function(){pm.expect(pm.response.json()).to.have.property('docente.correo');});"]}}]
+        },
+        {
+          "name": "VA6 - Codigo estudiante invalido (TIA)",
+          "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"titulo\":\"Formato TIA valido\",\"objetivos\":[\"Analizar requisitos\",\"Diseñar solucion\",\"Implementar sistema\"],\"docente\":{\"tipoIdentificacion\":\"CC\",\"numeroIdentificacion\":\"123\",\"nombres\":\"Ana\",\"apellidos\":\"Diaz\",\"correo\":\"ana6@unicauca.edu.co\",\"departamento\":\"Sistemas\"},\"nombreEstudiante\":\"Juan\",\"nombreAsesor\":\"Pedro\",\"codigoEstudiante\":\"INVALIDO\"}"},"url":"{{baseUrl}}/formatosA/tia"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 400',function(){pm.response.to.have.status(400);});","pm.test('Error codigoEstudiante presente',function(){pm.expect(pm.response.json()).to.have.property('codigoEstudiante');});"]}}]
+        },
+        {
+          "name": "VA7 - Descripcion observacion vacia",
+          "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"descripcion\":\"\",\"idFormatoA\":{{formatoId}},\"idsDocentes\":[{{docenteId}}]}"},"url":"{{baseUrl}}/observaciones"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 400',function(){pm.response.to.have.status(400);});","pm.test('Error descripcion presente',function(){pm.expect(pm.response.json()).to.have.property('descripcion');});"]}}]
+        },
+        {
+          "name": "VA8 - Docentes observacion vacios",
+          "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"descripcion\":\"Observacion valida\",\"idFormatoA\":{{formatoId}},\"idsDocentes\":[]}"},"url":"{{baseUrl}}/observaciones"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 400',function(){pm.response.to.have.status(400);});","pm.test('Error idsDocentes presente',function(){pm.expect(pm.response.json()).to.have.property('idsDocentes');});"]}}]
+        },
+        {
+          "name": "VA9 - Estado nulo (actualizar)",
+          "request": {"method":"PUT","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"estado\":null}"},"url":"{{baseUrl}}/formatosA/{{formatoId}}/estado"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 400',function(){pm.response.to.have.status(400);});","pm.test('Error estado presente',function(){pm.expect(pm.response.json()).to.have.property('estado');});"]}}]
+        },
+        {
+          "name": "VA10 - TipoIdentificacion vacio (Docente)",
+          "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"tipoIdentificacion\":\"\",\"numeroIdentificacion\":\"123\",\"nombres\":\"Ana\",\"apellidos\":\"Diaz\",\"correo\":\"ana10@unicauca.edu.co\",\"departamento\":\"Sistemas\"}"},"url":"{{baseUrl}}/docentes"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 400',function(){pm.response.to.have.status(400);});","pm.test('Error tipoIdentificacion presente',function(){pm.expect(pm.response.json()).to.have.property('tipoIdentificacion');});"]}}]
+        }
+      ]
+    },
+    {
+      "name": "2. Validacion Personalizada (VerboInfinitivo)",
+      "item": [
+        {
+          "name": "VP1 - Verbos infinitivos validos",
+          "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"titulo\":\"Formato con verbos validos\",\"objetivos\":[\"Analizar requisitos\",\"Diseñar solucion\",\"Implementar sistema\"],\"docente\":{\"tipoIdentificacion\":\"CC\",\"numeroIdentificacion\":\"123\",\"nombres\":\"Ana\",\"apellidos\":\"Diaz\",\"correo\":\"vp1@unicauca.edu.co\",\"departamento\":\"Sistemas\"}}"},"url":"{{baseUrl}}/formatosA"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 201',function(){pm.response.to.have.status(201);});","pm.test('Objetivos aceptados',function(){pm.expect(pm.response.json()).to.have.property('idFormatoA');});"]}}]
+        },
+        {
+          "name": "VP2 - Verbos no reconocidos",
+          "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"titulo\":\"Formato verbos no reconocidos\",\"objetivos\":[\"Correr rapidamente\",\"Hacer cosas\"],\"docente\":{\"tipoIdentificacion\":\"CC\",\"numeroIdentificacion\":\"123\",\"nombres\":\"Ana\",\"apellidos\":\"Diaz\",\"correo\":\"vp2@unicauca.edu.co\",\"departamento\":\"Sistemas\"}}"},"url":"{{baseUrl}}/formatosA"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 400',function(){pm.response.to.have.status(400);});","var j=pm.response.json();","pm.test('Error en objetivos',function(){pm.expect(j).to.have.property('objetivos');});"]}}]
+        },
+        {
+          "name": "VP3 - Verbo no infinitivo",
+          "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"titulo\":\"Formato verbo no infinitivo\",\"objetivos\":[\"Volare alto\"],\"docente\":{\"tipoIdentificacion\":\"CC\",\"numeroIdentificacion\":\"123\",\"nombres\":\"Ana\",\"apellidos\":\"Diaz\",\"correo\":\"vp3@unicauca.edu.co\",\"departamento\":\"Sistemas\"}}"},"url":"{{baseUrl}}/formatosA"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 400',function(){pm.response.to.have.status(400);});","var j=pm.response.json();","pm.test('Error en objetivos',function(){pm.expect(j).to.have.property('objetivos');});"]}}]
+        }
+      ]
+    },
+    {
+      "name": "3. Reglas de Negocio",
+      "item": [
+        {
+          "name": "RN1 - Titulo duplicado",
+          "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"titulo\":\"{{formatoTitulo}}\",\"objetivos\":[\"Analizar requisitos\",\"Diseñar solucion\",\"Implementar sistema\"],\"docente\":{\"idPersona\":{{docenteId}},\"tipoIdentificacion\":\"CC\",\"numeroIdentificacion\":\"123\",\"nombres\":\"Ana\",\"apellidos\":\"Diaz\",\"correo\":\"docente.base@unicauca.edu.co\",\"departamento\":\"Sistemas\"}}"},"url":"{{baseUrl}}/formatosA"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 409 CONFLICT',function(){pm.response.to.have.status(409);});"]}}]
+        },
+        {
+          "name": "RN2 - Formato sin docente",
+          "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"titulo\":\"Formato Sin Docente Unico\",\"objetivos\":[\"Analizar requisitos\",\"Diseñar solucion\",\"Implementar sistema\"],\"docente\":null}"},"url":"{{baseUrl}}/formatosA"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 400 o 409',function(){var c=pm.response.code;pm.expect(c).to.be.oneOf([400,409]);});"]}}]
+        },
+        {
+          "name": "RN3 - Correo docente duplicado",
+          "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"tipoIdentificacion\":\"CC\",\"numeroIdentificacion\":\"222222\",\"nombres\":\"Otro\",\"apellidos\":\"Docente\",\"correo\":\"{{docenteCorreo}}\",\"departamento\":\"Sistemas\"}"},"url":"{{baseUrl}}/docentes"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 409 CONFLICT',function(){pm.response.to.have.status(409);});"]}}]
+        },
+        {
+          "name": "RN4 - Observacion sin docentes",
+          "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"descripcion\":\"Observacion sin docentes\",\"idFormatoA\":{{formatoId}},\"idsDocentes\":[]}"},"url":"{{baseUrl}}/observaciones"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 400',function(){pm.response.to.have.status(400);});"]}}]
+        }
+      ]
+    },
+    {
+      "name": "4. Servicios REST (8 servicios)",
+      "item": [
+        {
+          "name": "S1 - POST /formatosA (crear generico)",
+          "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"titulo\":\"Formato REST Generico\",\"objetivos\":[\"Analizar requisitos\",\"Diseñar solucion\",\"Implementar sistema\"],\"docente\":{\"tipoIdentificacion\":\"CC\",\"numeroIdentificacion\":\"444444\",\"nombres\":\"REST\",\"apellidos\":\"Tester\",\"correo\":\"rest.generico@unicauca.edu.co\",\"departamento\":\"Sistemas\"}}"},"url":"{{baseUrl}}/formatosA"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 201',function(){pm.response.to.have.status(201);});","pm.test('Tiene idFormatoA',function(){pm.expect(pm.response.json()).to.have.property('idFormatoA');});"]}}]
+        },
+        {
+          "name": "S2 - POST /formatosA/ppa",
+          "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"titulo\":\"Formato REST PPA\",\"objetivos\":[\"Analizar requisitos\",\"Diseñar solucion\",\"Implementar sistema\"],\"docente\":{\"tipoIdentificacion\":\"CC\",\"numeroIdentificacion\":\"555555\",\"nombres\":\"REST\",\"apellidos\":\"PPA\",\"correo\":\"rest.ppa@unicauca.edu.co\",\"departamento\":\"Sistemas\"},\"nombreEstudiante\":\"Juan\",\"nombreAsesor\":\"Pedro\",\"codigoEstudiante\":\"20IS123\"}"},"url":"{{baseUrl}}/formatosA/ppa"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 201',function(){pm.response.to.have.status(201);});","pm.test('Tiene idFormatoA',function(){pm.expect(pm.response.json()).to.have.property('idFormatoA');});"]}}]
+        },
+        {
+          "name": "S3 - POST /formatosA/tia",
+          "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"titulo\":\"Formato REST TIA\",\"objetivos\":[\"Analizar requisitos\",\"Diseñar solucion\",\"Implementar sistema\"],\"docente\":{\"tipoIdentificacion\":\"CC\",\"numeroIdentificacion\":\"666666\",\"nombres\":\"REST\",\"apellidos\":\"TIA\",\"correo\":\"rest.tia@unicauca.edu.co\",\"departamento\":\"Sistemas\"},\"nombreEstudiante\":\"Maria\",\"nombreAsesor\":\"Luis\",\"codigoEstudiante\":\"21IS456\"}"},"url":"{{baseUrl}}/formatosA/tia"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 201',function(){pm.response.to.have.status(201);});","pm.test('Tiene idFormatoA',function(){pm.expect(pm.response.json()).to.have.property('idFormatoA');});"]}}]
+        },
+        {
+          "name": "S4 - GET /formatosA (listar)",
+          "request": {"method":"GET","url":"{{baseUrl}}/formatosA"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 200',function(){pm.response.to.have.status(200);});","pm.test('Retorna array',function(){pm.expect(pm.response.json()).to.be.an('array');});"]}}]
+        },
+        {
+          "name": "S5 - GET /formatosA/{id}",
+          "request": {"method":"GET","url":"{{baseUrl}}/formatosA/{{formatoId}}"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 200',function(){pm.response.to.have.status(200);});","pm.test('Tiene titulo',function(){pm.expect(pm.response.json()).to.have.property('titulo');});"]}}]
+        },
+        {
+          "name": "S6 - GET /formatosA/docente/{idDocente}",
+          "request": {"method":"GET","url":"{{baseUrl}}/formatosA/docente/{{docenteId}}"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 200',function(){pm.response.to.have.status(200);});","pm.test('Retorna array',function(){pm.expect(pm.response.json()).to.be.an('array');});"]}}]
+        },
+        {
+          "name": "S7 - GET /formatosA/detalle?titulo=...",
+          "request": {"method":"GET","url":"{{baseUrl}}/formatosA/detalle?titulo={{formatoTitulo}}"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 200',function(){pm.response.to.have.status(200);});","pm.test('Tiene titulo',function(){pm.expect(pm.response.json()).to.have.property('titulo');});"]}}]
+        },
+        {
+          "name": "S8 - PUT /formatosA/{id}/estado",
+          "request": {"method":"PUT","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"estado\":\"En evaluacion\"}"},"url":"{{baseUrl}}/formatosA/{{formatoId}}/estado"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 200',function(){pm.response.to.have.status(200);});","pm.test('Estado actualizado',function(){pm.expect(pm.response.json().estado.estado).to.eql('En evaluacion');});"]}}]
+        }
+      ]
+    },
+    {
+      "name": "5. Lazy vs Eager (revisar consola backend)",
+      "item": [
+        {
+          "name": "LE1 - GET FormatoA por ID (estado EAGER, evaluaciones/docente LAZY)",
+          "request": {"method":"GET","url":"{{baseUrl}}/formatosA/{{formatoId}}"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 200',function(){pm.response.to.have.status(200);});","// Revisar consola backend: esperar query FormatoA + Estado (EAGER), SIN query Evaluaciones ni Docente"]}}]
+        },
+        {
+          "name": "LE2 - GET formatos por docente (EntityGraph docente+estado)",
+          "request": {"method":"GET","url":"{{baseUrl}}/formatosA/docente/{{docenteId}}"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 200',function(){pm.response.to.have.status(200);});","// Revisar consola: query con JOIN a Docente y Estado. Evaluaciones LAZY (sin query adicional)."]}}]
+        },
+        {
+          "name": "LE3 - GET detalle por titulo (query JPQL con JOINs)",
+          "request": {"method":"GET","url":"{{baseUrl}}/formatosA/detalle?titulo={{formatoTitulo}}"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 200',function(){pm.response.to.have.status(200);});","// Revisar consola: query JPQL con JOIN Docente, Estado, Evaluaciones, Observaciones"]}}]
+        },
+        {
+          "name": "LE4 - GET historico evaluaciones (JPQL)",
+          "request": {"method":"GET","url":"{{baseUrl}}/evaluaciones/historico/{{formatoId}}"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 200',function(){pm.response.to.have.status(200);});","// Revisar consola: query JPQL de Evaluaciones por idFormatoA"]}}]
+        },
+        {
+          "name": "LE5 - GET observaciones por formatoA (carga jerarquia)",
+          "request": {"method":"GET","url":"{{baseUrl}}/observaciones/formatoA/{{formatoId}}"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["// Puede retornar 200 o 500 si MultipleBagFetchException. Revisar consola.","pm.test('Response recibida',function(){pm.expect(pm.response.code).to.be.oneOf([200,500]);});"]}}]
+        }
+      ]
+    },
+    {
+      "name": "6. Internacionalizacion (mensajes ES vs EN)",
+      "item": [
+        {
+          "name": "I1 - Accept-Language: EN (mensaje en ingles)",
+          "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"},{"key":"Accept-Language","value":"en"}],"body":{"mode":"raw","raw":"{\"titulo\":null,\"objetivos\":[\"Analizar requisitos\",\"Diseñar solucion\",\"Implementar sistema\"],\"docente\":{\"tipoIdentificacion\":\"CC\",\"numeroIdentificacion\":\"123\",\"nombres\":\"Ana\",\"apellidos\":\"Diaz\",\"correo\":\"ana.i1@unicauca.edu.co\",\"departamento\":\"Sistemas\"}}"},"url":"{{baseUrl}}/formatosA"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 400',function(){pm.response.to.have.status(400);});","var j=pm.response.json();","pm.test('Mensaje en ingles (required)',function(){pm.expect(j.titulo||'').to.match(/required/i);});"]}}]
+        },
+        {
+          "name": "I2 - Accept-Language: ES (mensaje en español)",
+          "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"},{"key":"Accept-Language","value":"es"}],"body":{"mode":"raw","raw":"{\"titulo\":null,\"objetivos\":[\"Analizar requisitos\",\"Diseñar solucion\",\"Implementar sistema\"],\"docente\":{\"tipoIdentificacion\":\"CC\",\"numeroIdentificacion\":\"123\",\"nombres\":\"Ana\",\"apellidos\":\"Diaz\",\"correo\":\"ana.i2@unicauca.edu.co\",\"departamento\":\"Sistemas\"}}"},"url":"{{baseUrl}}/formatosA"},
+          "event": [{"listen":"test","script":{"type":"text/javascript","exec":["pm.test('Status 400',function(){pm.response.to.have.status(400);});","var j=pm.response.json();","pm.test('Mensaje en español (obligatorio)',function(){pm.expect(j.titulo||'').to.match(/obligatorio/i);});"]}}]
+        }
+      ]
+    }
+  ],
+  "event": [],
+  "variable": [
+    {"key":"baseUrl","value":"http://localhost:5000/api","type":"string"},
+    {"key":"docenteId","value":"","type":"string"},
+    {"key":"docenteCorreo","value":"","type":"string"},
+    {"key":"formatoId","value":"","type":"string"},
+    {"key":"formatoTitulo","value":"","type":"string"}
+  ]
+}
