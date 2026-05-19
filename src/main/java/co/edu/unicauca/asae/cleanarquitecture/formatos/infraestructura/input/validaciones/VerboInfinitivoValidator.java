@@ -16,7 +16,7 @@ public class VerboInfinitivoValidator implements ConstraintValidator<VerboInfini
             "crear", "evaluar", "probar", "documentar", "investigar",
             "estudiar", "comparar", "identificar", "definir", "validar",
             "optimizar", "integrar", "desplegar", "configurar", "gestionar",
-            "planificar", "ejecutar", "revisar", "mejorar", "automatizar"
+            "planificar", "ejecutar", "revisar", "mejorar", "automatizar" 
     );
 
     @Override

@@ -4,15 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.stereotype.Component;
 
 import co.edu.unicauca.asae.cleanarquitecture.formatos.dominio.modelos.Evaluacion;
+import co.edu.unicauca.asae.cleanarquitecture.formatos.dominio.modelos.FormatoA;
 import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.entities.EvaluacionEntity;
+import co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.entities.FormatoAEntity;
 import co.edu.unicauca.asae.cleanarquitecture.observaciones.dominio.modelos.Observacion;
 import co.edu.unicauca.asae.cleanarquitecture.observaciones.infraestructura.output.ObservacionEntity;
 
 @Component
 public class EvaluacionMapper {
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public EvaluacionEntity mapDeDominioAEntity(Evaluacion dominio) {
         if (dominio == null) return null;
@@ -20,6 +28,11 @@ public class EvaluacionMapper {
         entity.setIdEvaluacion(dominio.getIdEvaluacion());
         entity.setConcepto(dominio.getConcepto());
         entity.setFechaRegistro(dominio.getFechaRegistro());
+        if (dominio.getFormatoA() != null && dominio.getFormatoA().getIdFormatoA() != null
+                && this.entityManager != null) {
+            entity.setFormatoA(this.entityManager.getReference(
+                    FormatoAEntity.class, dominio.getFormatoA().getIdFormatoA()));
+        }
         if (dominio.getObservaciones() != null) {
             entity.setObservaciones(dominio.getObservaciones().stream()
                 .map(this::mapObservacionDeDominioAEntity)
@@ -35,6 +48,11 @@ public class EvaluacionMapper {
         dominio.setIdEvaluacion(entity.getIdEvaluacion());
         dominio.setConcepto(entity.getConcepto());
         dominio.setFechaRegistro(entity.getFechaRegistro());
+        if (entity.getFormatoA() != null) {
+            FormatoA fa = new FormatoA();
+            fa.setIdFormatoA(entity.getFormatoA().getIdFormatoA());
+            dominio.setFormatoA(fa);
+        }
         if (entity.getObservaciones() != null) {
             dominio.setObservaciones(entity.getObservaciones().stream()
                 .map(this::mapObservacionDeEntityADominio)

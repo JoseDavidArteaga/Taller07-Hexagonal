@@ -31,7 +31,9 @@ public interface FormatoARepositoryInt extends CrudRepository<FormatoAEntity, In
 
     List<FormatoAEntity> findByDocente_NombresIgnoreCase(String nombreDocente);
 
-    @EntityGraph(attributePaths = {"docente", "estado", "evaluaciones", "evaluaciones.observaciones", "evaluaciones.observaciones.docentes"})
+    // Solo una bag (evaluaciones) para evitar MultipleBagFetchException.
+    // observaciones y sus docentes se cargan LAZY dentro de la transaccion del gateway al mapear.
+    @EntityGraph(attributePaths = {"docente", "estado", "evaluaciones"})
     Optional<FormatoAEntity> findDetalleByIdFormatoA(Integer idFormatoA);
 
     @Query("SELECT new co.edu.unicauca.asae.cleanarquitecture.formatos.infraestructura.output.dto.FormatoADetalleDTO(" +

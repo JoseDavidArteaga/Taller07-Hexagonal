@@ -1,0 +1,334 @@
+{
+  "info": {
+    "name": "Taller07 - Hexagonal (ASAE)",
+    "_postman_id": "a1f6c7e0-taller07-hex-0001",
+    "description": "Pruebas de los servicios del Taller 07 (Arquitectura Hexagonal + JPA). Cubre los 8 servicios solicitados y los escenarios para validar Lazy vs Eager observando la consola del backend.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000" },
+    { "key": "idFormatoA", "value": "1" },
+    { "key": "idDocente1", "value": "1" },
+    { "key": "idDocente2", "value": "2" }
+  ],
+  "item": [
+    {
+      "name": "0. Pre-requisitos",
+      "item": [
+        {
+          "name": "Crear Docente 1 (Carlos Perez)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/docentes", "host": ["{{baseUrl}}"], "path": ["api","docentes"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipoIdentificacion\": \"CC\",\n  \"numeroIdentificacion\": \"1061800001\",\n  \"nombres\": \"Carlos\",\n  \"apellidos\": \"Perez\",\n  \"correo\": \"carlos.perez@unicauca.edu.co\",\n  \"departamento\": \"Sistemas\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Crear Docente 2 (Lucia Gomez)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/docentes", "host": ["{{baseUrl}}"], "path": ["api","docentes"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipoIdentificacion\": \"CC\",\n  \"numeroIdentificacion\": \"1061800002\",\n  \"nombres\": \"Lucia\",\n  \"apellidos\": \"Gomez\",\n  \"correo\": \"lucia.gomez@unicauca.edu.co\",\n  \"departamento\": \"Sistemas\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2.1 Crear Formato A",
+      "item": [
+        {
+          "name": "Crear Formato A (generico)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/formatosA", "host": ["{{baseUrl}}"], "path": ["api","formatosA"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Sistema de Monitoreo de Calidad del Aire\",\n  \"objetivos\": [\n    \"Disenar la arquitectura del sistema\",\n    \"Implementar los sensores remotos\",\n    \"Validar la captura de datos en tiempo real\"\n  ],\n  \"docente\": {\n    \"tipoIdentificacion\": \"CC\",\n    \"numeroIdentificacion\": \"1061800003\",\n    \"nombres\": \"Andres\",\n    \"apellidos\": \"Martinez\",\n    \"correo\": \"andres.martinez@unicauca.edu.co\",\n    \"departamento\": \"Sistemas\"\n  }\n}"
+            }
+          }
+        },
+        {
+          "name": "Crear Formato A reutilizando docente existente (por idPersona)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/formatosA", "host": ["{{baseUrl}}"], "path": ["api","formatosA"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Otro Formato del mismo docente\",\n  \"objetivos\": [\n    \"Definir requisitos funcionales\",\n    \"Construir prototipo\",\n    \"Documentar el sistema\"\n  ],\n  \"docente\": {\n    \"idPersona\": {{idDocente2}},\n    \"tipoIdentificacion\": \"CC\",\n    \"numeroIdentificacion\": \"1061800002\",\n    \"nombres\": \"Lucia\",\n    \"apellidos\": \"Gomez\",\n    \"correo\": \"lucia.gomez@unicauca.edu.co\",\n    \"departamento\": \"Sistemas\"\n  }\n}"
+            }
+          }
+        },
+        {
+          "name": "Crear Formato PPA",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/formatosA/ppa", "host": ["{{baseUrl}}"], "path": ["api","formatosA","ppa"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Practica Profesional en Empresa XYZ\",\n  \"objetivos\": [\n    \"Aplicar metodologias agiles\",\n    \"Implementar microservicios\",\n    \"Documentar la solucion\"\n  ],\n  \"nombreEstudiante\": \"Juan David Vela\",\n  \"nombreAsesor\": \"Ing. Lucia Gomez\",\n  \"linkCartaAceptacion\": \"https://drive.google.com/aceptacion.pdf\",\n  \"codigoEstudiante\": \"2021IS123\",\n  \"docente\": {\n    \"tipoIdentificacion\": \"CC\",\n    \"numeroIdentificacion\": \"1061800004\",\n    \"nombres\": \"Sara\",\n    \"apellidos\": \"Lopez\",\n    \"correo\": \"sara.lopez@unicauca.edu.co\",\n    \"departamento\": \"Sistemas\"\n  }\n}"
+            }
+          }
+        },
+        {
+          "name": "Crear Formato TIA",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/formatosA/tia", "host": ["{{baseUrl}}"], "path": ["api","formatosA","tia"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Trabajo de Investigacion Aplicada en IA\",\n  \"objetivos\": [\n    \"Explorar el estado del arte\",\n    \"Entrenar un modelo de clasificacion\",\n    \"Evaluar la precision obtenida\"\n  ],\n  \"nombreEstudiante\": \"Maria Quintero\",\n  \"nombreAsesor\": \"PhD. Sara Lopez\",\n  \"codigoEstudiante\": \"2020IS045\",\n  \"docente\": {\n    \"tipoIdentificacion\": \"CC\",\n    \"numeroIdentificacion\": \"1061800005\",\n    \"nombres\": \"Mario\",\n    \"apellidos\": \"Rojas\",\n    \"correo\": \"mario.rojas@unicauca.edu.co\",\n    \"departamento\": \"Sistemas\"\n  }\n}"
+            }
+          }
+        },
+        {
+          "name": "Error: titulo duplicado",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/formatosA", "host": ["{{baseUrl}}"], "path": ["api","formatosA"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Sistema de Monitoreo de Calidad del Aire\",\n  \"objetivos\": [\n    \"Disenar la arquitectura del sistema\",\n    \"Implementar los sensores remotos\",\n    \"Validar la captura de datos en tiempo real\"\n  ],\n  \"docente\": {\n    \"idPersona\": {{idDocente1}},\n    \"tipoIdentificacion\": \"CC\",\n    \"numeroIdentificacion\": \"1061800001\",\n    \"nombres\": \"Carlos\",\n    \"apellidos\": \"Perez\",\n    \"correo\": \"carlos.perez@unicauca.edu.co\",\n    \"departamento\": \"Sistemas\"\n  }\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2.2 Crear Observacion",
+      "item": [
+        {
+          "name": "Crear Observacion (primera - crea evaluacion)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/observaciones", "host": ["{{baseUrl}}"], "path": ["api","observaciones"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descripcion\": \"Revisar los objetivos: deben ir en infinitivo y ser medibles.\",\n  \"idFormatoA\": {{idFormatoA}},\n  \"idsDocentes\": [{{idDocente1}}, {{idDocente2}}]\n}"
+            }
+          }
+        },
+        {
+          "name": "Crear Observacion (segunda - reutiliza evaluacion)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/observaciones", "host": ["{{baseUrl}}"], "path": ["api","observaciones"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descripcion\": \"Falta justificar el alcance del proyecto.\",\n  \"idFormatoA\": {{idFormatoA}},\n  \"idsDocentes\": [{{idDocente1}}]\n}"
+            }
+          }
+        },
+        {
+          "name": "Error: idFormatoA inexistente",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/observaciones", "host": ["{{baseUrl}}"], "path": ["api","observaciones"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descripcion\": \"Observacion sobre formato inexistente\",\n  \"idFormatoA\": 99999,\n  \"idsDocentes\": [{{idDocente1}}]\n}"
+            }
+          }
+        },
+        {
+          "name": "Error: idsDocentes vacio",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/observaciones", "host": ["{{baseUrl}}"], "path": ["api","observaciones"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descripcion\": \"Sin docentes\",\n  \"idFormatoA\": {{idFormatoA}},\n  \"idsDocentes\": []\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2.3 Listar Observaciones (EAGER por @EntityGraph)",
+      "item": [
+        {
+          "name": "GET observaciones por FormatoA",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/observaciones/formatoA/{{idFormatoA}}", "host": ["{{baseUrl}}"], "path": ["api","observaciones","formatoA","{{idFormatoA}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2.4 Listar Miembros del Comite (LAZY roles/historicos)",
+      "item": [
+        {
+          "name": "GET docentes/comite",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/docentes/comite", "host": ["{{baseUrl}}"], "path": ["api","docentes","comite"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2.5 Formatos A por Docente (EAGER formatos+estado / LAZY evaluacion)",
+      "item": [
+        {
+          "name": "GET formatosA/docente/{idDocente}",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/formatosA/docente/{{idDocente1}}", "host": ["{{baseUrl}}"], "path": ["api","formatosA","docente","{{idDocente1}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2.6 Listar Docentes (keyword)",
+      "item": [
+        {
+          "name": "GET todos",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/docentes", "host": ["{{baseUrl}}"], "path": ["api","docentes"] }
+          }
+        },
+        {
+          "name": "GET por nombres (keyword)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/docentes?nombres=Carlos",
+              "host": ["{{baseUrl}}"], "path": ["api","docentes"],
+              "query": [{ "key": "nombres", "value": "Carlos" }]
+            }
+          }
+        },
+        {
+          "name": "GET filtrar por grupo y patron",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/docentes/filtrar?grupo=Sistemas&patron=Pe",
+              "host": ["{{baseUrl}}"], "path": ["api","docentes","filtrar"],
+              "query": [
+                { "key": "grupo", "value": "Sistemas" },
+                { "key": "patron", "value": "Pe" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2.7 Actualizar Estado Formato A (@Query @Modifying)",
+      "item": [
+        {
+          "name": "PUT formatosA/{id}/estado",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/formatosA/{{idFormatoA}}/estado", "host": ["{{baseUrl}}"], "path": ["api","formatosA","{{idFormatoA}}","estado"] },
+            "body": { "mode": "raw", "raw": "{\n  \"estado\": \"Aprobado\"\n}" }
+          }
+        },
+        {
+          "name": "Error: id inexistente",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/formatosA/99999/estado", "host": ["{{baseUrl}}"], "path": ["api","formatosA","99999","estado"] },
+            "body": { "mode": "raw", "raw": "{\n  \"estado\": \"Aprobado\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2.8 Historico de Evaluaciones (@Query JPQL)",
+      "item": [
+        {
+          "name": "GET evaluaciones/historico/{idFormatoA}",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/evaluaciones/historico/{{idFormatoA}}", "host": ["{{baseUrl}}"], "path": ["api","evaluaciones","historico","{{idFormatoA}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Pruebas Lazy vs Eager (analizar consola)",
+      "item": [
+        {
+          "name": "3.1 EAGER via @EntityGraph - GET observaciones/formatoA/{id}",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/observaciones/formatoA/{{idFormatoA}}", "host": ["{{baseUrl}}"], "path": ["api","observaciones","formatoA","{{idFormatoA}}"] },
+            "description": "Espera: UN SOLO SELECT con LEFT OUTER JOIN sobre FormatosA, Estados, Evaluaciones, Observaciones y Docentes. No deben aparecer SELECTs adicionales al iterar la respuesta."
+          }
+        },
+        {
+          "name": "3.2 LAZY puro - GET docentes/comite",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/docentes/comite", "host": ["{{baseUrl}}"], "path": ["api","docentes","comite"] },
+            "description": "Espera: 1 SELECT de Docentes + 1 SELECT de Historicos por cada docente + 1 SELECT de Roles por cada historico (N+1 = caracteristica LAZY)."
+          }
+        },
+        {
+          "name": "3.3 EAGER parcial + LAZY - GET formatosA/docente/{id}",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/formatosA/docente/{{idDocente1}}", "host": ["{{baseUrl}}"], "path": ["api","formatosA","docente","{{idDocente1}}"] },
+            "description": "Espera: primer SELECT con LEFT OUTER JOIN sobre Docentes y Estados. Las evaluaciones NO se cargan (LAZY)."
+          }
+        },
+        {
+          "name": "3.4 Cascada + EAGER del estado - POST /api/formatosA",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/formatosA", "host": ["{{baseUrl}}"], "path": ["api","formatosA"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Demostracion de cascada y EAGER\",\n  \"objetivos\": [\n    \"Verificar cascada PERSIST de docente\",\n    \"Verificar cascada ALL de estado\",\n    \"Confirmar EAGER del estado\"\n  ],\n  \"docente\": {\n    \"tipoIdentificacion\": \"CC\",\n    \"numeroIdentificacion\": \"1061800099\",\n    \"nombres\": \"Nuevo\",\n    \"apellidos\": \"Director\",\n    \"correo\": \"nuevo.director@unicauca.edu.co\",\n    \"departamento\": \"Sistemas\"\n  }\n}"
+            },
+            "description": "Espera: INSERT Docentes (cascada PERSIST) + INSERT FormatosA + INSERT Estados (cascada ALL). Al mapear la respuesta NO se dispara SELECT extra del estado (EAGER)."
+          }
+        },
+        {
+          "name": "3.5 getReference (sin SELECT extra) - POST /api/observaciones",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/observaciones", "host": ["{{baseUrl}}"], "path": ["api","observaciones"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descripcion\": \"Probando getReference de evaluacion y docentes\",\n  \"idFormatoA\": {{idFormatoA}},\n  \"idsDocentes\": [{{idDocente1}}, {{idDocente2}}]\n}"
+            },
+            "description": "Espera: NO debe aparecer SELECT * FROM Evaluaciones/Docentes al asociar (proxies). Si la evaluacion no existia: INSERT Evaluaciones + UPDATE concepto + INSERT Observaciones + INSERTs en docentes_observaciones."
+          }
+        },
+        {
+          "name": "3.6 JPQL puro con LAZY - GET evaluaciones/historico/{id}",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/evaluaciones/historico/{{idFormatoA}}", "host": ["{{baseUrl}}"], "path": ["api","evaluaciones","historico","{{idFormatoA}}"] },
+            "description": "Espera: un UNICO SELECT sobre Evaluaciones por idFormatoA. NINGUN SELECT extra sobre FormatosA porque la relacion es LAZY y nadie la invoca."
+          }
+        }
+      ]
+    }
+  ]
+}
